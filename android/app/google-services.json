@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "678173002854",
+    "project_id": "cornflixdb",
+    "storage_bucket": "cornflixdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678173002854:android:c55cc50eee8f15d3ad71a7",
+        "android_client_info": {
+          "package_name": "com.example.corn_flix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678173002854-kgbmfn6urg8vkgive0kua23t57652b5h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8ew2C6TxdN_9_8WdoNr6lIgYvuWb-Mec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678173002854-kgbmfn6urg8vkgive0kua23t57652b5h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

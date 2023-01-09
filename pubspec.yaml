@@ -1,0 +1,39 @@
+name: corn_flix
+description: A new Flutter project.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.4 <3.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.5
+  firebase_core: ^2.4.0
+  firebase_auth: ^4.2.3
+  cloud_firestore: ^4.3.0
+  google_fonts: ^3.0.1
+  http:
+  carousel_slider: ^4.2.1
+  cached_network_image: ^3.2.3
+  location: ^4.4.0
+  permission_handler: ^10.2.0
+  geolocator: ^9.0.2
+  geocoding: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
