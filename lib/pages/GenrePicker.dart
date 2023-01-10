@@ -59,7 +59,6 @@ class _GenrePickerState extends State<GenrePicker> {
           .collection('users')
           .doc(user!.uid)
           .update({
-        // save the ids as a list of ints
         'genres': selectedChips.map((e) => e.id).toList(),
         'genre_page_done': true,
       });
