@@ -9,9 +9,6 @@ import '../data/RecommendedMovies.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart' as geo;
-
 import 'MovieDetails.dart';
 
 class Home extends StatefulWidget {
@@ -26,6 +23,7 @@ class _HomeState extends State<Home> {
   List<int> genreIds = [];
   RecommendedMovies? recommendedMovies;
   BoxOfficeMovies? boxOfficeMovies;
+  BoxOfficeMovies? upcomingMovies;
   LocationData? locationData;
   Location _location = Location();
   String username = "alexluelmo";
@@ -42,6 +40,7 @@ class _HomeState extends State<Home> {
     getRecommendedMovies();
     getMoviesFromCountry();
     getBoxOfficeMovies();
+    getUpcomingMovies();
     _location = Location();
     _requestLocationPermission();
   }
@@ -63,8 +62,7 @@ class _HomeState extends State<Home> {
     await fetchUserFavGenres();
 
     var client = http.Client();
-    var uri =
-        'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=';
+    var uri = 'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=';
     for (var i = 0; i < genreIds.length; i++) {
       uri += genreIds[i].toString();
       if (i != genreIds.length - 1) {
@@ -78,33 +76,47 @@ class _HomeState extends State<Home> {
       var data = response.body;
 
       Map<String, dynamic> recommendedMoviesMap = jsonDecode(data);
-      recommendedMoviesMap['results']
-          .removeWhere((e) => e['poster_path'] == null);
-      return recommendedMovies =
-          RecommendedMovies.fromJson(recommendedMoviesMap);
+      recommendedMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
+      return recommendedMovies = RecommendedMovies.fromJson(recommendedMoviesMap);
 
-      setState(() {});
     } else {
+      // ignore: avoid_print
       print(response.statusCode);
     }
   }
 
   getBoxOfficeMovies() async {
     var client = http.Client();
-    var url = Uri.parse(
-        'https://api.themoviedb.org/3/movie/now_playing?api_key=b5f80d427803f2753428de379acc4337&language=en-US&page=1');
+    var url = Uri.parse('https://api.themoviedb.org/3/movie/now_playing?api_key=b5f80d427803f2753428de379acc4337&language=en-US&page=1');
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
       var data = response.body;
 
       Map<String, dynamic> boxOfficeMoviesMap = jsonDecode(data);
-      boxOfficeMoviesMap['results']
-          .removeWhere((e) => e['poster_path'] == null);
+      boxOfficeMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
       return boxOfficeMovies = BoxOfficeMovies.fromJson(boxOfficeMoviesMap);
 
-      setState(() {});
     } else {
+      // ignore: avoid_print
+      print(response.statusCode);
+    }
+  }
+
+  getUpcomingMovies() async {
+    var client = http.Client();
+    var url = Uri.parse('https://api.themoviedb.org/3/movie/upcoming?api_key=b5f80d427803f2753428de379acc4337&language=en-US&page=1');
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var data = response.body;
+
+      Map<String, dynamic> upcomingMoviesMap = jsonDecode(data);
+      upcomingMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
+      return upcomingMovies = BoxOfficeMovies.fromJson(upcomingMoviesMap);
+
+    } else {
+      // ignore: avoid_print
       print(response.statusCode);
     }
   }
@@ -128,8 +140,7 @@ class _HomeState extends State<Home> {
         builder: (context) {
           return AlertDialog(
             title: const Text('Permission denied'),
-            content: const Text(
-                'Please enable location permission to use this feature'),
+            content: const Text('Please enable location permission to use this feature'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -162,13 +173,11 @@ class _HomeState extends State<Home> {
       Map<String, dynamic> cityAndLanguageCodeMap = jsonDecode(data);
       userCity = cityAndLanguageCodeMap['countryName'];
       languageCodes = cityAndLanguageCodeMap['languages']
-          .toString()
-          .split(',')
-          .map((e) => e.split('-')[0])
-          .toList();
+          .toString().split(',').map((e) => e.split('-')[0]).toList();
 
       setState(() {});
     } else {
+      // ignore: avoid_print
       print(response.statusCode);
     }
   }
@@ -189,8 +198,8 @@ class _HomeState extends State<Home> {
         moviesFromCountry.sort((a, b) => b['popularity'].compareTo(a['popularity']));
         return moviesFromCountryRecommended = RecommendedMovies.fromJson({'results': moviesFromCountry});
 
-        setState(() {});
       } else {
+        // ignore: avoid_print
         print(response.statusCode);
       }
     }
@@ -260,9 +269,7 @@ class _HomeState extends State<Home> {
                               _isFilterChipSelected = true;
                               getMoviesFromCountry();
                             }
-                            _filterChipColor = _isFilterChipSelected
-                                ? const Color.fromRGBO(36, 37, 41, 1)
-                                : const Color.fromRGBO(255, 56, 56, 1);
+                            _filterChipColor = _isFilterChipSelected ? const Color.fromRGBO(36, 37, 41, 1) : const Color.fromRGBO(255, 56, 56, 1);
                           });
                         },
                         child: Chip(
@@ -284,37 +291,36 @@ class _HomeState extends State<Home> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return CarouselSlider.builder(
-                              itemCount:
-                                  recommendedMovies?.results?.length ?? 0,
-                              itemBuilder: (BuildContext context, int index,
-                                  int pageViewIndex) {
+                              itemCount: recommendedMovies?.results?.length ?? 0,
+                              itemBuilder: (BuildContext context, int index, int pageViewIndex) {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: 300,
-                                      height: 240,
-                                      margin: const EdgeInsets.only(
-                                          left: 3.0, right: 3.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                              'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
-                                          fit: BoxFit.cover,
+                                    GestureDetector(
+                                      onTap: () {
+                                        pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
+                                      },
+                                      child: Container(
+                                        width: 300,
+                                        height: 240,
+                                        margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(14),
+                                          image: DecorationImage(
+                                            image: CachedNetworkImageProvider(
+                                                'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     const SizedBox(height: 10),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 13, right: 13),
+                                      padding: const EdgeInsets.only(left: 13, right: 13),
                                       child: Text(
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          recommendedMovies
-                                                  ?.results?[index].title ??
-                                              '',
+                                          recommendedMovies?.results?[index].title ?? '',
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
@@ -325,17 +331,13 @@ class _HomeState extends State<Home> {
                                     ),
                                     const SizedBox(height: 6),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 7),
+                                          padding: const EdgeInsets.only(right: 7),
                                           child: GestureDetector(
                                             onTap: () {
-                                              saveFavId(recommendedMovies
-                                                      ?.results?[index].id ??
-                                                  0);
+                                              saveFavId(recommendedMovies?.results?[index].id ?? 0);
                                             },
                                             child: Image.asset(
                                               'assets/images/fav.png',
@@ -344,8 +346,7 @@ class _HomeState extends State<Home> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 7),
+                                          padding: const EdgeInsets.only(left: 7),
                                           child: Image.asset(
                                             'assets/images/dislike.png',
                                             height: 30,
@@ -364,8 +365,7 @@ class _HomeState extends State<Home> {
                                 reverse: false,
                                 autoPlay: true,
                                 autoPlayInterval: const Duration(seconds: 8),
-                                autoPlayAnimationDuration:
-                                    const Duration(milliseconds: 800),
+                                autoPlayAnimationDuration: const Duration(milliseconds: 800),
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 enlargeCenterPage: true,
                                 scrollDirection: Axis.horizontal,
@@ -380,8 +380,7 @@ class _HomeState extends State<Home> {
                             child: SizedBox(
                               width: 50,
                               height: 50,
-                              child: CircularProgressIndicator(
-                                  color: Color.fromRGBO(255, 56, 56, 1)),
+                              child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
                             ),
                           );
                         })
@@ -391,35 +390,35 @@ class _HomeState extends State<Home> {
                           if (snapshot.hasData) {
                             return CarouselSlider.builder(
                               itemCount: moviesFromCountryRecommended?.results?.length ?? 0,
-                              itemBuilder: (BuildContext context, int index,
-                                  int pageViewIndex) {
+                              itemBuilder: (BuildContext context, int index, int pageViewIndex) {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: 300,
-                                      height: 240,
-                                      margin: const EdgeInsets.only(
-                                          left: 3.0, right: 3.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                              'https://image.tmdb.org/t/p/w300/${moviesFromCountryRecommended?.results?[index].posterPath}'),
-                                          fit: BoxFit.cover,
+                                    GestureDetector(
+                                      onTap: () {
+                                        pushToMovieDetailsPage(moviesFromCountryRecommended!.results![index].id!);
+                                      },
+                                      child: Container(
+                                        width: 300,
+                                        height: 240,
+                                        margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(14),
+                                          image: DecorationImage(
+                                            image: CachedNetworkImageProvider(
+                                                'https://image.tmdb.org/t/p/w300/${moviesFromCountryRecommended?.results?[index].posterPath}'),
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     const SizedBox(height: 10),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 13, right: 13),
+                                      padding: const EdgeInsets.only(left: 13, right: 13),
                                       child: Text(
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          moviesFromCountryRecommended
-                                                  ?.results?[index].title ??
-                                              '',
+                                          moviesFromCountryRecommended?.results?[index].title ?? '',
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
@@ -430,12 +429,10 @@ class _HomeState extends State<Home> {
                                     ),
                                     const SizedBox(height: 6),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 7),
+                                          padding: const EdgeInsets.only(right: 7),
                                           child: GestureDetector(
                                             onTap: () {
                                               saveFavId(
@@ -448,8 +445,7 @@ class _HomeState extends State<Home> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 7),
+                                          padding: const EdgeInsets.only(left: 7),
                                           child: Image.asset(
                                             'assets/images/dislike.png',
                                             height: 30,
@@ -468,8 +464,7 @@ class _HomeState extends State<Home> {
                                 reverse: false,
                                 autoPlay: true,
                                 autoPlayInterval: const Duration(seconds: 8),
-                                autoPlayAnimationDuration:
-                                    const Duration(milliseconds: 800),
+                                autoPlayAnimationDuration: const Duration(milliseconds: 800),
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 enlargeCenterPage: true,
                                 scrollDirection: Axis.horizontal,
@@ -484,8 +479,7 @@ class _HomeState extends State<Home> {
                             child: SizedBox(
                               width: 50,
                               height: 50,
-                              child: CircularProgressIndicator(
-                                  color: Color.fromRGBO(255, 56, 56, 1)),
+                              child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
                             ),
                           );
                         }),
@@ -509,22 +503,25 @@ class _HomeState extends State<Home> {
                       if (snapshot.hasData) {
                         return CarouselSlider.builder(
                           itemCount: boxOfficeMovies?.results?.length ?? 0,
-                          itemBuilder: (BuildContext context, int index,
-                              int pageViewIndex) {
+                          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: 300,
-                                  height: 120,
-                                  margin: const EdgeInsets.only(
-                                      left: 5.0, right: 5.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    image: DecorationImage(
-                                      image: CachedNetworkImageProvider(
-                                          'https://image.tmdb.org/t/p/w300/${boxOfficeMovies?.results?[index].posterPath}'),
-                                      fit: BoxFit.cover,
+                                GestureDetector(
+                                  onTap: () {
+                                    pushToMovieDetailsPage(boxOfficeMovies!.results![index].id!);
+                                  },
+                                  child: Container(
+                                    width: 300,
+                                    height: 120,
+                                    margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            'https://image.tmdb.org/t/p/w300/${boxOfficeMovies?.results?[index].posterPath}'),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -540,8 +537,7 @@ class _HomeState extends State<Home> {
                             reverse: false,
                             autoPlay: true,
                             autoPlayInterval: const Duration(milliseconds: 200),
-                            autoPlayAnimationDuration:
-                                const Duration(milliseconds: 1900),
+                            autoPlayAnimationDuration: const Duration(milliseconds: 1900),
                             autoPlayCurve: Curves.fastOutSlowIn,
                             scrollDirection: Axis.horizontal,
                           ),
@@ -554,8 +550,78 @@ class _HomeState extends State<Home> {
                         child: SizedBox(
                           width: 26,
                           height: 26,
-                          child: CircularProgressIndicator(
-                              color: Color.fromRGBO(255, 56, 56, 1)),
+                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                        ),
+                      );
+                    }),
+                const SizedBox(height: 15),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text('Upcoming',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          color: Colors.white,
+                          fontSize: 16.6,
+                          fontWeight: FontWeight.w400,
+                        )),
+                  ),
+                ),
+                FutureBuilder(
+                    future: getUpcomingMovies(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return CarouselSlider.builder(
+                          itemCount: upcomingMovies?.results?.length ?? 0,
+                          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    pushToMovieDetailsPage(upcomingMovies!.results![index].id!);
+                                  },
+                                  child: Container(
+                                    width: 300,
+                                    height: 120,
+                                    margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            'https://image.tmdb.org/t/p/w300/${upcomingMovies?.results?[index].posterPath}'),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                          options: CarouselOptions(
+                            height: 150.0,
+                            aspectRatio: 9 / 9,
+                            viewportFraction: 0.35,
+                            initialPage: 3,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: false,
+                            autoPlayInterval: const Duration(milliseconds: 200),
+                            autoPlayAnimationDuration: const Duration(milliseconds: 1900),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 75, bottom: 75),
+                        child: SizedBox(
+                          width: 26,
+                          height: 26,
+                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
                         ),
                       );
                     }),
