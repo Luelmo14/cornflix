@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:corn_flix/components/NavBar.dart';
 import 'package:corn_flix/data/RecommendedMovies.dart';
 import 'package:corn_flix/data/TopCastData.dart';
+import 'package:corn_flix/pages/Favorites.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +11,14 @@ import '../data/MovieDetailsData.dart';
 
 class MovieDetails extends StatefulWidget {
   final int id;
-  const MovieDetails({Key? key, required this.id}) : super(key: key);
+  final String previousPage;
+  final GlobalKey<NavigatorState> navigatorKey;
+  const MovieDetails({
+    Key? key,
+    required this.id,
+    required this.previousPage,
+    required this.navigatorKey
+  }) : super(key: key);
 
   @override
   _MovieDetailsState createState() => _MovieDetailsState();
@@ -18,19 +27,41 @@ class MovieDetails extends StatefulWidget {
 class _MovieDetailsState extends State<MovieDetails> {
   MovieDetailsData? movieDetailsData;
   final user = FirebaseAuth.instance.currentUser;
-  bool _isFavButtonSelected = false;
   TopCastData? topCastData;
   RecommendedMovies? similarMovies;
-
-  Image _favButtonImage = Image.asset(
-    'assets/images/favDetails.png',
-    height: 30,
-    width: 30,
-  );
+  bool _isLiked = false;
+  final movieDetailsNavigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
+    _checkIfLiked();
+  }
+
+  _checkIfLiked() async {
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get()
+          .then((value) {
+        if (value['fav_movies'].contains(widget.id)) {
+          setState(() {
+            _isLiked = true;
+          });
+        } else {
+          setState(() {
+            _isLiked = false;
+          });
+        }
+      });
+    }
+  }
+
+  _toggleLike() {
+    setState(() {
+      _isLiked = !_isLiked;
+    });
   }
 
   getMovieDetailsById() async {
@@ -104,6 +135,15 @@ class _MovieDetailsState extends State<MovieDetails> {
     });
   }
 
+  pushToMovieDetailsPage(int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MovieDetails(id: id, previousPage: 'MovieDetails', navigatorKey: movieDetailsNavigatorKey),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,7 +183,15 @@ class _MovieDetailsState extends State<MovieDetails> {
                               backgroundColor: Colors.transparent,
                               elevation: 0,
                               onPressed: () {
-                                Navigator.pop(context);
+                                if (widget.previousPage == 'Favorites') {
+                                  Navigator.pushReplacement(
+                                      context, MaterialPageRoute(
+                                    builder: (context) => const NavBar(index: 2),
+                                    )
+                                  );
+                                } else {
+                                  Navigator.pop(context);
+                                }
                               },
                               child: Image.asset(
                                 'assets/images/backFromDetails.png',
@@ -242,37 +290,32 @@ class _MovieDetailsState extends State<MovieDetails> {
                                     ),
                                   ),
                                ),
-                               // Add and image button aligned to the right for the favorite movies
                                Expanded(
                                  child: Align(
                                    alignment: Alignment.centerRight,
                                    child: Padding(
                                      padding: const EdgeInsets.only(right: 7),
                                      child: FloatingActionButton(
-                                       onPressed: () {
-                                         setState(() {
-                                           if (_isFavButtonSelected) {
-                                             _isFavButtonSelected = false;
-                                              deleteFavId(widget.id);
-                                           } else {
-                                             _isFavButtonSelected = true;
-                                             saveFavId(widget.id);
-                                           }
-                                           _favButtonImage = _isFavButtonSelected ?
-                                           Image.asset(
-                                             'assets/images/FavDetailsOrange.png',
-                                             height: 30,
-                                             width: 30,
-                                           ) : Image.asset(
-                                             'assets/images/favDetails.png',
-                                             height: 30,
-                                             width: 30,
-                                           );
-                                         });
+                                       onPressed: () async {
+                                         await _toggleLike();
+                                         if (_isLiked) {
+                                           saveFavId(movieDetailsData!.id!);
+                                         } else {
+                                           deleteFavId(movieDetailsData!.id!);
+                                         }
                                        },
                                        backgroundColor: Colors.transparent,
                                        elevation: 0,
-                                       child: _favButtonImage,
+                                       child: _isLiked
+                                        ? Image.asset(
+                                            'assets/images/FavDetailsOrange.png',
+                                            height: 30,
+                                            width: 30,
+                                          ) : Image.asset(
+                                            'assets/images/favDetails.png',
+                                            height: 30,
+                                            width: 30,
+                                          ),
                                      ),
                                    ),
                                  ),
@@ -283,7 +326,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                            Align(
                              alignment: Alignment.centerLeft,
                              child: Padding(
-                               padding: const EdgeInsets.only(left: 15),
+                               padding: const EdgeInsets.only(left: 15, right: 15),
                                child: Text(
                                  movieDetailsData!.title ?? '',
                                  style: const TextStyle(
@@ -462,6 +505,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                                     fontFamily: 'Inter'
                                                 ),
                                                 textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ],
@@ -526,13 +570,18 @@ class _MovieDetailsState extends State<MovieDetails> {
                                           width: 90,
                                           child: Column(
                                             children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(10),
-                                                child: Image.network(
-                                                  'https://image.tmdb.org/t/p/w500${similarMovies!.results![index].posterPath}',
-                                                  height: 130,
-                                                  width: 90,
-                                                  fit: BoxFit.cover,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  pushToMovieDetailsPage(similarMovies!.results![index].id ?? 0);
+                                                },
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  child: Image.network(
+                                                    'https://image.tmdb.org/t/p/w500${similarMovies!.results![index].posterPath}',
+                                                    height: 130,
+                                                    width: 90,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                               const SizedBox(height: 5),

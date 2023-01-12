@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
+import 'MovieDetails.dart';
+
 class Favorites extends StatefulWidget {
   const Favorites({Key? key}) : super(key: key);
 
@@ -12,23 +14,24 @@ class Favorites extends StatefulWidget {
 }
 
 class _FavoritesState extends State<Favorites> {
+  final user = FirebaseAuth.instance.currentUser;
   List<int> favoriteMovieIds = [];
   List<Map<String, dynamic>> favoriteMovies = [];
   Future<List<Map<String, dynamic>>> _movieDetailsFuture = Future.value([]);
+  final favoritesNavigatorKey = GlobalKey<NavigatorState>();
 
   @override
   initState() {
+    super.initState();
     fetchUserFavMoviesIds();
     _movieDetailsFuture = fetchMovieDetails();
-    super.initState();
   }
 
   fetchUserFavMoviesIds() async {
-    final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(user.uid)
+          .doc(user!.uid)
           .get()
           .then((value) {
         favoriteMovieIds = List<int>.from(value['fav_movies']);
@@ -56,75 +59,179 @@ class _FavoritesState extends State<Favorites> {
     return favoriteMovies;
   }
 
+  deleteFavId(int id) {
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+      'fav_movies': FieldValue.arrayRemove([id])
+    });
+  }
+
+  pushToMovieDetailsPage(int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MovieDetails(id: id, previousPage: 'Favorites', navigatorKey: favoritesNavigatorKey),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                FutureBuilder(
-                  future: _movieDetailsFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      favoriteMovies = snapshot.data!;
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: favoriteMovies.length,
-                        itemBuilder: (context, index) {
-                          var movie = favoriteMovies[index];
-                          return Dismissible(
-                            key: Key(movie['id'].toString()),
-                            onDismissed: (direction) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      '${movie['title']} removed from favorites'),
-                                ),
-                              );
-                              setState(() {
-                                favoriteMovies.removeAt(index);
-                              });
-                            },
-                            background: Container(
-                              color: Colors.red,
-                              child: const Icon(Icons.delete),
-                            ),
-                            child: ListTile(
-                              title: Text(
-                                movie['title'],
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              subtitle: Text(
-                                movie['release_date'],
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return const Padding(
-                      padding: EdgeInsets.only(top: 155, bottom: 155),
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator(
-                            color: Color.fromRGBO(255, 56, 56, 1)),
-                      ),
-                    );
-                  }
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/logoNoBackground.png',
+                    height: 37,
+                  ),
+                  const Text('CornFlix ',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      )),
+                ],
+              ),
+              const SizedBox(height: 30),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text('Favorites',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      color: Colors.white,
+                      fontSize: 18.5,
+                      fontWeight: FontWeight.w400,
+                    )
+                  ),
                 ),
-        ]))),
+              ),
+              const SizedBox(height: 10),
+              FutureBuilder(
+                future: _movieDetailsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    favoriteMovies = snapshot.data!;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: favoriteMovies.length,
+                      itemBuilder: (context, index) {
+                        var movie = favoriteMovies[index];
+                        return Dismissible(
+                          key: Key(movie['id'].toString()),
+                          onDismissed: (direction) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    '${movie['title']} removed from favorites'),
+                              ),
+                            );
+                            setState(() {
+                              favoriteMovies.removeAt(index);
+                            });
+                            deleteFavId(movie['id']);
+                          },
+                          background: Container(
+                            color: Colors.red,
+                            child: const Icon(
+                              Icons.delete,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                          child: Card(
+                            color: const Color.fromRGBO(23, 25, 26, 1),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 13, right: 13),
+                              child: GestureDetector(
+                                onTap: () {
+                                  pushToMovieDetailsPage(movie['id']);
+                                },
+                                child: Container(
+                                  height: 105,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: const Color.fromRGBO(36, 37, 41, 1),
+                                  ),
+                                  child: Flexible(
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(11),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(14),
+                                            child: Image.network(
+                                              'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                                              height: 105,
+                                              width: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        Flexible(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                movie['title'],
+                                                style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  color: Colors.white,
+                                                  fontSize: 17.5,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Text(
+                                                movie['release_date'].substring(0, 4),
+                                                style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  color: Colors.white,
+                                                  fontSize: 16.3,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 155, bottom: 155),
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(
+                          color: Color.fromRGBO(255, 56, 56, 1)),
+                    ),
+                  );
+                }
+              ),
+              const SizedBox(height: 30),
+        ])),
       ),
     );
   }

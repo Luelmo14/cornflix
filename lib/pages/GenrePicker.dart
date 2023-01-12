@@ -65,7 +65,7 @@ class _GenrePickerState extends State<GenrePicker> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const NavBar(),
+          builder: (context) => const NavBar(index: 0),
         ),
       );
     }

@@ -5,19 +5,26 @@ import '../pages/Profile.dart';
 import '../pages/Search.dart';
 
 class NavBar extends StatefulWidget {
-  const NavBar({Key? key}) : super(key: key);
+  final int index;
+  const NavBar({Key? key, required this.index }) : super(key: key);
 
   @override
   _NavBarState createState() => _NavBarState();
 }
 
 class _NavBarState extends State<NavBar> {
-  int index = 0;
+  int _currentIndex = 0;
   final pages = [const Home(), Search(), Favorites(), Profile()];
 
   @override
+  void initState() {
+    _currentIndex = widget.index;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
-    body: pages[index],
+    body: pages[_currentIndex],
     bottomNavigationBar: Container(
       decoration: const BoxDecoration(
         color: Colors.black,
@@ -32,9 +39,9 @@ class _NavBarState extends State<NavBar> {
         height: 78,
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          currentIndex: index,
+          currentIndex: _currentIndex,
           backgroundColor: const Color.fromRGBO(36, 37, 41, 1),
-          onTap: (index) => setState(() => this.index = index),
+          onTap: (index) => setState(() => _currentIndex = index),
           selectedItemColor: const Color.fromRGBO(243, 134, 71, 1),
           unselectedItemColor: Colors.white,
           iconSize: 25,

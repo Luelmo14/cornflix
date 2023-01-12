@@ -32,7 +32,9 @@ class _HomeState extends State<Home> {
   List<dynamic> moviesFromCountry = [];
   RecommendedMovies? moviesFromCountryRecommended;
   Color _filterChipColor = const Color.fromRGBO(36, 37, 41, 1);
+  Color _filterChipTextColor = const Color.fromRGBO(176, 176, 178, 1);
   bool _isFilterChipSelected = true;
+  final homeNavigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -209,7 +211,7 @@ class _HomeState extends State<Home> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MovieDetails(id: id),
+        builder: (context) => MovieDetails(id: id, previousPage: 'Home', navigatorKey: homeNavigatorKey),
       ),
     );
   }
@@ -269,15 +271,18 @@ class _HomeState extends State<Home> {
                               _isFilterChipSelected = true;
                               getMoviesFromCountry();
                             }
-                            _filterChipColor = _isFilterChipSelected ? const Color.fromRGBO(36, 37, 41, 1) : const Color.fromRGBO(255, 56, 56, 1);
+                            _filterChipColor = _isFilterChipSelected
+                                ? const Color.fromRGBO(36, 37, 41, 1) : const Color.fromRGBO(255, 56, 56, 1);
+                            _filterChipTextColor = _isFilterChipSelected
+                                ? const Color.fromRGBO(176, 176, 178, 1) : const Color.fromRGBO(255, 255, 255, 1);
                           });
                         },
                         child: Chip(
                             backgroundColor: _filterChipColor,
-                            label: const Text('Filter by your location',
+                            label: Text('Filter by your location',
                                 style: TextStyle(
                                   fontFamily: 'Inter',
-                                  color: Color.fromRGBO(176, 176, 178, 1),
+                                  color: _filterChipTextColor,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ))),
@@ -436,7 +441,7 @@ class _HomeState extends State<Home> {
                                           child: GestureDetector(
                                             onTap: () {
                                               saveFavId(
-                                                  moviesFromCountry[index].id);
+                                                  moviesFromCountryRecommended?.results?[index].id ?? 0);
                                             },
                                             child: Image.asset(
                                               'assets/images/fav.png',

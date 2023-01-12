@@ -30,7 +30,7 @@ class _WidgetTreeState extends State<WidgetTree> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (showGenrePage) {
-                  return const NavBar();
+                  return const NavBar(index: 0);
                 } else {
                   return GenrePicker();
                 }
