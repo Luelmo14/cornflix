@@ -476,6 +476,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   shrinkWrap: true,
                                   scrollDirection: Axis.horizontal,
                                   itemCount: topCastData!.cast!.length,
+                                  padding: const EdgeInsets.only(right: 15),
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.only(left: 15),
@@ -563,6 +564,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemCount: similarMovies!.results!.length,
+                                    padding: const EdgeInsets.only(right: 15),
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.only(left: 15),

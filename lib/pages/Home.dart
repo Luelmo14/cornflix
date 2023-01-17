@@ -315,6 +315,7 @@ class _HomeState extends State<Home> {
                                             image: CachedNetworkImageProvider(
                                                 'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
                                             fit: BoxFit.cover,
+                                            filterQuality: FilterQuality.none,
                                           ),
                                         ),
                                       ),
@@ -413,6 +414,7 @@ class _HomeState extends State<Home> {
                                             image: CachedNetworkImageProvider(
                                                 'https://image.tmdb.org/t/p/w300/${moviesFromCountryRecommended?.results?[index].posterPath}'),
                                             fit: BoxFit.cover,
+                                            filterQuality: FilterQuality.none,
                                           ),
                                         ),
                                       ),
@@ -526,6 +528,7 @@ class _HomeState extends State<Home> {
                                         image: CachedNetworkImageProvider(
                                             'https://image.tmdb.org/t/p/w300/${boxOfficeMovies?.results?[index].posterPath}'),
                                         fit: BoxFit.cover,
+                                        filterQuality: FilterQuality.none,
                                       ),
                                     ),
                                   ),
@@ -597,6 +600,7 @@ class _HomeState extends State<Home> {
                                         image: CachedNetworkImageProvider(
                                             'https://image.tmdb.org/t/p/w300/${upcomingMovies?.results?[index].posterPath}'),
                                         fit: BoxFit.cover,
+                                        filterQuality: FilterQuality.none,
                                       ),
                                     ),
                                   ),

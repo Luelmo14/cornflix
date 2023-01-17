@@ -148,41 +148,50 @@ class _FavoritesState extends State<Favorites> {
                               color: Colors.white,
                             ),
                           ),
-                          child: Card(
-                            color: const Color.fromRGBO(23, 25, 26, 1),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 13, right: 13),
-                              child: GestureDetector(
-                                onTap: () {
-                                  pushToMovieDetailsPage(movie['id']);
-                                },
-                                child: Container(
-                                  height: 105,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: const Color.fromRGBO(36, 37, 41, 1),
-                                  ),
-                                  child: Flexible(
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(11),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(14),
-                                            child: Image.network(
-                                              'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                                              height: 105,
-                                              width: 80,
-                                              fit: BoxFit.cover,
-                                            ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 13, right: 13, bottom: 11),
+                            child: GestureDetector(
+                              onTap: () {
+                                pushToMovieDetailsPage(movie['id']);
+                              },
+                              child: Container(
+                                height: 105,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: const Color.fromRGBO(36, 37, 41, 1),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Flexible(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(9),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(14),
+                                          child: Image.network(
+                                            'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                                            height: 105,
+                                            width: 80,
+                                            fit: BoxFit.cover,
+                                            filterQuality: FilterQuality.none,
                                           ),
                                         ),
-                                        Flexible(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(
+                                      ),
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 9.5),
+                                              child: Text(
                                                 movie['title'],
                                                 style: const TextStyle(
                                                   fontFamily: 'Inter',
@@ -190,24 +199,23 @@ class _FavoritesState extends State<Favorites> {
                                                   fontSize: 17.5,
                                                   fontWeight: FontWeight.w600,
                                                 ),
-                                                overflow: TextOverflow.ellipsis,
+                                                overflow: TextOverflow.clip,
                                               ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                movie['release_date'].substring(0, 4),
-                                                style: const TextStyle(
-                                                  fontFamily: 'Inter',
-                                                  color: Colors.white,
-                                                  fontSize: 16.3,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              movie['release_date'].substring(0, 4),
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter',
+                                                color: Colors.white,
+                                                fontSize: 16.3,
+                                                fontWeight: FontWeight.w400,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
