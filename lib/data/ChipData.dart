@@ -21,5 +21,4 @@ class ChipData {
         color: color ?? this.color,
         id: id ?? this.id,
       );
-
 }
