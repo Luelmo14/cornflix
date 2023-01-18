@@ -494,12 +494,40 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20, right: 20),
-                              child: Wrap(
-                                children: _buildGenreChips(),
+                          const SizedBox(height: 11.5),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            child: Container(
+                              height: 420,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: const Color.fromRGBO(36, 37, 41, 1),
+                              ),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 8),
+                                  const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 14),
+                                      child: Text('My favorite genres',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: Color.fromRGBO(163, 163, 163, 1),
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w500)),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 14, right: 14),
+                                      child: Wrap(
+                                        children: _buildGenreChips(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -672,10 +700,12 @@ class _ProfileState extends State<Profile> {
                 style: const TextStyle(
                     color: Colors.white,
                     fontFamily: 'Inter',
+                    fontSize: 15,
                     fontWeight: FontWeight.w400)),
+            padding: const EdgeInsets.all(8),
             backgroundColor: selectedGenres[chipData.id] == true || genreIds.contains(chipData.id)
-            ? Colors.red
-                : chipData.color,
+            ? const Color.fromRGBO(255, 56, 56, 1)
+                : const Color.fromRGBO(65, 66, 70, 1),
             onPressed: () {
               setState(() {
                 selectedGenres[chipData.id] = !(selectedGenres[chipData.id] == true);
@@ -684,13 +714,11 @@ class _ProfileState extends State<Profile> {
                     setState(() {
                       genreIds.add(chipData.id);
                     });
-                    print(genreIds);
                   } else {
                     selectedGenres[chipData.id] = false;
                     setState(() {
                       genreIds.remove(chipData.id);
                     });
-                    print(genreIds);
                   }
                 } else {
                   setState(() {
@@ -704,6 +732,7 @@ class _ProfileState extends State<Profile> {
           },
       );
       genreChips.add(chip);
+      genreChips.add(const Padding(padding: EdgeInsets.only(right: 9)));
     }
     return genreChips;
   }
