@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:corn_flix/components/NavBar.dart';
 import 'package:corn_flix/data/RecommendedMovies.dart';
 import 'package:corn_flix/data/TopCastData.dart';
-import 'package:corn_flix/pages/Favorites.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

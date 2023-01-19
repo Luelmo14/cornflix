@@ -14,7 +14,7 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int _currentIndex = 0;
-  final pages = [const Home(), Search(), Favorites(), Profile()];
+  final pages = [const Home(), const Search(), Favorites(), Profile()];
 
   @override
   void initState() {

@@ -531,7 +531,7 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 11.5),
+                          const SizedBox(height: 12),
                           Row(
                             children: [
                               Expanded(
@@ -672,7 +672,7 @@ class _ProfileState extends State<Profile> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 40),
                         ],
                       );
                     } else {
