@@ -60,6 +60,7 @@ class _RegisterState extends State<Register> {
       'surname': surname,
       'genre_page_done': false,
       'fav_movies': [],
+      'dismissed_movies': [],
     });
   }
 

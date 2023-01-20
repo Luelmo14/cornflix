@@ -35,6 +35,7 @@ class _HomeState extends State<Home> {
   Color _filterChipTextColor = const Color.fromRGBO(176, 176, 178, 1);
   bool _isFilterChipSelected = true;
   final homeNavigatorKey = GlobalKey<NavigatorState>();
+  List<int> dismissedMovies = [];
 
   @override
   void initState() {
@@ -60,8 +61,22 @@ class _HomeState extends State<Home> {
     }
   }
 
+  fetchUserDismissedMovies() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .get()
+          .then((value) {
+        dismissedMovies = List<int>.from(value.data()!['dismissed_movies']);
+      });
+    }
+  }
+
   getRecommendedMovies() async {
     await fetchUserFavGenres();
+    await fetchUserDismissedMovies();
 
     var client = http.Client();
     var uri = 'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=';
@@ -79,6 +94,8 @@ class _HomeState extends State<Home> {
 
       Map<String, dynamic> recommendedMoviesMap = jsonDecode(data);
       recommendedMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
+      recommendedMoviesMap['results'].removeWhere((e) => dismissedMovies.contains(e['id']));
+
       return recommendedMovies = RecommendedMovies.fromJson(recommendedMoviesMap);
 
     } else {
@@ -222,6 +239,18 @@ class _HomeState extends State<Home> {
     });
   }
 
+  deleteFavId(int id) {
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+      'fav_movies': FieldValue.arrayRemove([id])
+    });
+  }
+
+  addDismissedMovie(int id) {
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+      'dismissed_movies': FieldValue.arrayUnion([id])
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -298,105 +327,117 @@ class _HomeState extends State<Home> {
                             return CarouselSlider.builder(
                               itemCount: recommendedMovies?.results?.length ?? 0,
                               itemBuilder: (BuildContext context, int index, int pageViewIndex) {
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
-                                      },
-                                      child: GestureDetector(
-                                        onLongPress: () {
-                                          saveFavId(recommendedMovies?.results?[index].id ?? 0);
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                            content: const Text('Added to favourites',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w600
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-                                            dismissDirection: DismissDirection.horizontal,
-                                            duration: const Duration(milliseconds: 2000),
-                                          ));
+                                var movie = recommendedMovies?.results?[index];
+                                return Dismissible(
+                                  key: Key(movie?.id.toString() ?? ''),
+                                  direction: DismissDirection.down,
+                                  onDismissed: (direction) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          '${movie?.title} dismissed',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                        dismissDirection: DismissDirection.horizontal,
+                                      ),
+                                    );
+                                    setState(() {
+                                      recommendedMovies?.results?.removeAt(index);
+                                    });
+                                    deleteFavId(movie?.id ?? 0);
+                                    addDismissedMovie(movie?.id ?? 0);
+                                    getRecommendedMovies();
+                                  },
+                                  background: Container(
+                                    color: const Color.fromRGBO(23, 25, 26, 1),
+                                    child: const Icon(
+                                      Icons.delete,
+                                      size: 190,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
                                         },
-                                        child: Container(
-                                          width: 300,
-                                          height: 240,
-                                          margin: const EdgeInsets.only(left: 3.0, right: 3.0),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(14),
-                                            image: DecorationImage(
-                                              image: CachedNetworkImageProvider(
-                                                  'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
-                                              fit: BoxFit.cover,
-                                              filterQuality: FilterQuality.none,
+                                        child: GestureDetector(
+                                          onLongPress: () {
+                                            saveFavId(recommendedMovies?.results?[index].id ?? 0);
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                              content: const Text('Added to favourites',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Inter',
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w600
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
+                                              behavior: SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                              dismissDirection: DismissDirection.horizontal,
+                                              duration: const Duration(milliseconds: 2000),
+                                            ));
+                                          },
+                                          child: Container(
+                                            width: 300,
+                                            height: 240,
+                                            margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(14),
+                                              image: DecorationImage(
+                                                image: CachedNetworkImageProvider(
+                                                    'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
+                                                fit: BoxFit.cover,
+                                                filterQuality: FilterQuality.none,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 13, right: 13),
-                                      child: Text(
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          recommendedMovies?.results?[index].title ?? '',
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            color: Colors.white,
-                                            fontSize: 16.2,
-                                            fontWeight: FontWeight.w400,
-                                          )),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 7),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              saveFavId(recommendedMovies?.results?[index].id ?? 0);
-                                            },
-                                            child: Image.asset(
-                                              'assets/images/fav.png',
-                                              height: 30,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 7),
-                                          child: Image.asset(
-                                            'assets/images/dislike.png',
-                                            height: 30,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                      const SizedBox(height: 8),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 13, right: 13),
+                                        child: Text(
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            recommendedMovies?.results?[index].title ?? '',
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontFamily: 'Inter',
+                                              color: Colors.white,
+                                              fontSize: 16.2,
+                                              fontWeight: FontWeight.w400,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               },
                               options: CarouselOptions(
-                                height: 360.0,
-                                viewportFraction: 0.55,
+                                height: 290,
+                                viewportFraction: 0.58,
                                 initialPage: 0,
                                 enableInfiniteScroll: true,
                                 reverse: false,
                                 autoPlay: true,
-                                autoPlayInterval: const Duration(seconds: 8),
+                                autoPlayInterval: const Duration(seconds: 9),
                                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 enlargeCenterPage: true,
                                 scrollDirection: Axis.horizontal,
-                                enlargeFactor: 0.23,
+                                enlargeFactor: 0.16,
                               ),
                             );
                           } else if (snapshot.hasError) {
