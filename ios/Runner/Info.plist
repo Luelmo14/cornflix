@@ -49,5 +49,7 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
     <string>This app needs access to your location to display recommended movies within your territory.</string>
+    <key>NSHapticFeedbackUsageDescription</key>
+    <string>Your device will vibrate to provide haptic feedback.</string>
 </dict>
 </plist>

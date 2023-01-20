@@ -31,7 +31,7 @@ class _NavBarState extends State<NavBar> {
         border: Border(
           top: BorderSide(
             color: Color.fromRGBO(243, 134, 71, 1),
-            width: 2,
+            width: 1.6,
           ),
         ),
       ),

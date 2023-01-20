@@ -61,6 +61,7 @@ class _RegisterState extends State<Register> {
       'genre_page_done': false,
       'fav_movies': [],
       'dismissed_movies': [],
+      'is_first_time': true,
     });
   }
 

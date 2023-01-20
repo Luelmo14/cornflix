@@ -10,6 +10,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'MovieDetails.dart';
+import 'package:flutter/services.dart';
+import 'package:another_flushbar/flushbar.dart';
+
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -36,10 +39,12 @@ class _HomeState extends State<Home> {
   bool _isFilterChipSelected = true;
   final homeNavigatorKey = GlobalKey<NavigatorState>();
   List<int> dismissedMovies = [];
+  bool _isFirstAccess = false;
 
   @override
   void initState() {
     super.initState();
+    _checkFirstAccess();
     getRecommendedMovies();
     getMoviesFromCountry();
     getBoxOfficeMovies();
@@ -251,8 +256,343 @@ class _HomeState extends State<Home> {
     });
   }
 
+  _checkFirstAccess() {
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).get().then((value) {
+      if (value.data()!['is_first_time']) {
+        setState(() {
+          _isFirstAccess = true;
+        });
+      } else {
+        setState(() {
+          _isFirstAccess = false;
+        });
+      }
+    });
+  }
+
+  updateFirstAccess() {
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+      'is_first_time': false
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_isFirstAccess) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Flushbar(
+          backgroundGradient: const LinearGradient(
+            colors: [
+              Color.fromRGBO(243, 134, 71, 22),
+              Color.fromRGBO(243, 104, 71, 22),
+              Color.fromRGBO(243, 134, 71, 22)],
+          ),
+          barBlur: 2.4,
+          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 70),
+          borderRadius: BorderRadius.circular(15),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          titleText: const Text(
+            'Welcome to CornFlix!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  blurRadius: 12,
+                  offset: Offset(0.5, 0.5),
+                ),
+              ],
+            ),
+          ),
+          messageText: const Text(
+            'Seems like this is your first time here. Let us show you around!',
+            style: TextStyle(
+              color: Color.fromRGBO(255, 255, 255, 20),
+              fontSize: 13.5,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  blurRadius: 6,
+                  offset: Offset(0.6, 0.6),
+                ),
+              ],
+            ),
+          ),
+          icon: const Icon(
+            Icons.info_outline,
+            size: 23,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                color: Colors.black26,
+                blurRadius: 6,
+                offset: Offset(0.6, 0.6),
+              ),
+            ],
+          ),
+          isDismissible: false,
+          shouldIconPulse: true,
+          mainButton: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Future.delayed(const Duration(milliseconds: 800), () {
+              Flushbar(
+                backgroundGradient: const LinearGradient(
+                  colors: [
+                    Color.fromRGBO(243, 134, 71, 22),
+                    Color.fromRGBO(243, 104, 71, 22),
+                    Color.fromRGBO(243, 134, 71, 22)],
+                ),
+                barBlur: 2.4,
+                margin: const EdgeInsets.only(left: 15, right: 15, top: 40),
+                borderRadius: BorderRadius.circular(15),
+                flushbarPosition: FlushbarPosition.TOP,
+                titleText: const Text(
+                  'Recommended list for you!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        blurRadius: 12,
+                        offset: Offset(0.5, 0.5),
+                      ),
+                    ],
+                  ),
+                ),
+                messageText: const Text(
+                  'Add to favorites with a long press or swipe down to discard!',
+                  style: TextStyle(
+                    color: Color.fromRGBO(255, 255, 255, 20),
+                    fontSize: 13.5,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        blurRadius: 6,
+                        offset: Offset(0.6, 0.6),
+                      ),
+                    ],
+                  ),
+                ),
+                icon: const Icon(
+                  Icons.recommend,
+                  size: 23,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black26,
+                      blurRadius: 6,
+                      offset: Offset(0.6, 0.6),
+                    ),
+                  ],
+                ),
+                isDismissible: false,
+                shouldIconPulse: true,
+                mainButton: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Future.delayed(const Duration(milliseconds: 800), () {
+                      Flushbar(
+                        backgroundGradient: const LinearGradient(
+                          colors: [
+                            Color.fromRGBO(243, 134, 71, 22),
+                            Color.fromRGBO(243, 104, 71, 22),
+                            Color.fromRGBO(243, 134, 71, 22)],
+                        ),
+                        barBlur: 2.4,
+                        margin: const EdgeInsets.only(left: 80, right: 15, top: 20),
+                        borderRadius: BorderRadius.circular(15),
+                        flushbarPosition: FlushbarPosition.TOP,
+                        messageText: const Text(
+                          'You can also filter the movies by your location!',
+                          style: TextStyle(
+                            color: Color.fromRGBO(255, 255, 255, 20),
+                            fontSize: 13.5,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black26,
+                                blurRadius: 6,
+                                offset: Offset(0.6, 0.6),
+                              ),
+                            ],
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.location_on_rounded,
+                          size: 23,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black26,
+                              blurRadius: 6,
+                              offset: Offset(0.6, 0.6),
+                            ),
+                          ],
+                        ),
+                        isDismissible: false,
+                        shouldIconPulse: true,
+                        mainButton: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Future.delayed(const Duration(milliseconds: 800), () {
+                              Flushbar(
+                                backgroundGradient: const LinearGradient(
+                                  colors: [
+                                    Color.fromRGBO(243, 134, 71, 22),
+                                    Color.fromRGBO(243, 104, 71, 22),
+                                    Color.fromRGBO(243, 134, 71, 22)],
+                                ),
+                                barBlur: 2.4,
+                                margin: const EdgeInsets.only(left: 15, right: 15, bottom: 70),
+                                borderRadius: BorderRadius.circular(15),
+                                flushbarPosition: FlushbarPosition.BOTTOM,
+                                titleText: const Text(
+                                  'Explore CornFlix!',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black26,
+                                        blurRadius: 12,
+                                        offset: Offset(0.5, 0.5),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                messageText: const Text(
+                                  'Find your next movie adventure and enjoy the journey!',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(255, 255, 255, 20),
+                                    fontSize: 13.5,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w500,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black26,
+                                        blurRadius: 6,
+                                        offset: Offset(0.6, 0.6),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                icon: const Icon(
+                                  Icons.movie_creation_outlined,
+                                  size: 23,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black26,
+                                      blurRadius: 6,
+                                      offset: Offset(0.6, 0.6),
+                                    ),
+                                  ],
+                                ),
+                                isDismissible: false,
+                                shouldIconPulse: true,
+                                mainButton: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+
+                                  },
+                                  child: const Text(
+                                    'FINISH',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Inter',
+                                      fontSize: 14.6,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black26,
+                                          blurRadius: 6,
+                                          offset: Offset(0.8, 0.8),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ).show(context);
+                            });
+                          },
+                          child: const Text(
+                            'NEXT',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Inter',
+                              fontSize: 14.6,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black26,
+                                  blurRadius: 6,
+                                  offset: Offset(0.8, 0.8),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ).show(context);
+                    });
+                  },
+                  child: const Text(
+                    'NEXT',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                      fontSize: 14.6,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black26,
+                          blurRadius: 6,
+                          offset: Offset(0.8, 0.8),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ).show(context);
+              });
+            },
+            child: const Text(
+              'NEXT',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Inter',
+                fontSize: 14.6,
+                shadows: [
+                  Shadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0.8, 0.8),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ).show(context);
+
+
+      });
+      updateFirstAccess();
+      _isFirstAccess = false;
+    }
     return Scaffold(
       backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
       body: SafeArea(
@@ -354,6 +694,7 @@ class _HomeState extends State<Home> {
                                     deleteFavId(movie?.id ?? 0);
                                     addDismissedMovie(movie?.id ?? 0);
                                     getRecommendedMovies();
+                                    HapticFeedback.mediumImpact();
                                   },
                                   background: Container(
                                     color: const Color.fromRGBO(23, 25, 26, 1),
@@ -367,28 +708,33 @@ class _HomeState extends State<Home> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       InkWell(
-                                        onTap: () {
-                                          pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
+                                        highlightColor: const Color.fromRGBO(243, 134, 71, 1),
+                                        splashFactory: InkRipple.splashFactory,
+                                        radius: 5000,
+                                        borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
+                                        onLongPress: () {
+                                          saveFavId(recommendedMovies?.results?[index].id ?? 0);
+                                          HapticFeedback.mediumImpact();
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                            content: const Text('Added to favourites',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                            dismissDirection: DismissDirection.horizontal,
+                                            duration: const Duration(milliseconds: 2000),
+                                          ));
                                         },
                                         child: GestureDetector(
-                                          onLongPress: () {
-                                            saveFavId(recommendedMovies?.results?[index].id ?? 0);
-                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                              content: const Text('Added to favourites',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Inter',
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.w600
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
-                                              behavior: SnackBarBehavior.floating,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-                                              dismissDirection: DismissDirection.horizontal,
-                                              duration: const Duration(milliseconds: 2000),
-                                            ));
+                                          onTap: () {
+                                            pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
                                           },
                                           child: Container(
                                             width: 300,
@@ -400,7 +746,7 @@ class _HomeState extends State<Home> {
                                                 image: CachedNetworkImageProvider(
                                                     'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
                                                 fit: BoxFit.cover,
-                                                filterQuality: FilterQuality.none,
+                                                filterQuality: FilterQuality.medium,
                                               ),
                                             ),
                                           ),

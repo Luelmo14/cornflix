@@ -203,7 +203,7 @@ class _SearchState extends State<Search> {
                               height: 150,
                               decoration: BoxDecoration(
                                 color: const Color.fromRGBO(36, 37, 41, 1),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(15),
                               ),
                               child: Row(
                                 children: [
@@ -217,18 +217,19 @@ class _SearchState extends State<Search> {
                                       filterQuality: FilterQuality.none,
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 12),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      const SizedBox(height: 10),
                                       SizedBox(
                                         width: MediaQuery.of(context).size.width - 170,
                                         child: Text(
                                           searchedMovies?.results?[index].title ?? '',
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 17,
+                                            fontSize: 18,
                                             fontFamily: 'Inter',
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -239,7 +240,9 @@ class _SearchState extends State<Search> {
                                       ),
                                       const SizedBox(height: 10),
                                       Text(
-                                        searchedMovies?.results?[index].releaseDate ?? '',
+                                        searchedMovies?.results?[index].releaseDate != ''
+                                            ? '${searchedMovies?.results?[index].releaseDate}'
+                                            : 'No release date',
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 15,
@@ -274,6 +277,7 @@ class _SearchState extends State<Search> {
                         );
                       },
                     ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

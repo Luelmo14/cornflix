@@ -216,7 +216,10 @@ class _FavoritesState extends State<Favorites> {
                                             ),
                                             const SizedBox(height: 5),
                                             Text(
-                                              movie['release_date'].substring(0, 4),
+                                              // release date and if empty 'no release date'
+                                              movie['release_date'] != ''
+                                                  ? movie['release_date']
+                                                  : 'No release date',
                                               style: const TextStyle(
                                                 fontFamily: 'Inter',
                                                 color: Colors.white,

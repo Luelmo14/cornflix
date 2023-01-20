@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cornflix">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-   <application
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <application
         android:label="cornflix"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
