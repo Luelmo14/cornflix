@@ -28,7 +28,7 @@ class _RegisterState extends State<Register> {
           password: passwordController.text,
         );
         addUserDetails(nameController.text.trim(),
-            surnameController.text.trim(), emailController.text.trim());
+            surnameController.text.trim());
 
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -41,6 +41,7 @@ class _RegisterState extends State<Register> {
           });
         }
       } catch (e) {
+        // ignore: avoid_print
         print(e);
       }
     } else {
@@ -50,14 +51,13 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  Future addUserDetails(String name, String surname, String email) async {
+  Future addUserDetails(String name, String surname) async {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .set({
       'name': name,
       'surname': surname,
-      'email': email,
       'genre_page_done': false,
       'fav_movies': [],
     });
@@ -108,6 +108,7 @@ class _RegisterState extends State<Register> {
                     const SizedBox(height: 25),
                     Image.asset(
                       'assets/images/logo.png',
+                      height: 83,
                     ),
                     const SizedBox(height: 18),
                     Row(

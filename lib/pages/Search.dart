@@ -42,7 +42,6 @@ class _SearchState extends State<Search> {
       for (int i = 0; i < (searchedMovies?.results?.length ?? 0); i++) {
         _moviesFavStatus[searchedMovies?.results?[i].id ?? 0] = await _checkIfLiked(searchedMovies?.results?[i].id ?? 0);
       }
-      //return searchedMovies = RecommendedMovies.fromJson(searchMoviesMap);
 
     } else {
       // ignore: avoid_print

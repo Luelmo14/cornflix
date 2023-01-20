@@ -145,408 +145,333 @@ class _MovieDetailsState extends State<MovieDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                FutureBuilder(
-                  future: getMovieDetailsById(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Stack(
-                        children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.black,
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Color.fromRGBO(15, 15, 15, 1),
-                                    width: 15,
-                                  ),
-                                ),
-                              ),
-                            child: Image.network(
-                              'https://image.tmdb.org/t/p/w500/${movieDetailsData!.backdropPath}',
-                              fit: BoxFit.cover,
-                              height: 400,
-                              width: double.infinity,
-                            ),
-                          ),
-                          Positioned(
-                            top: 35,
-                            left: 25,
-                            child: FloatingActionButton(
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                              onPressed: () {
-                                if (widget.previousPage == 'Favorites') {
-                                  Navigator.pushReplacement(
-                                      context, MaterialPageRoute(
-                                    builder: (context) => const NavBar(index: 2),
-                                    )
-                                  );
-                                } else {
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: Image.asset(
-                                'assets/images/backFromDetails.png',
-                                height: 44,
-                                width: 44,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 360,
-                            right: 3,
-                            child: SizedBox(
-                              height: 30,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: movieDetailsData!.genres?.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 7),
-                                    child: Theme(
-                                      data: ThemeData(canvasColor: Colors.transparent),
-                                      child: Chip(
-                                        backgroundColor: const Color.fromRGBO(36, 37, 41, 0.80),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(9),
-                                        ),
-                                        label: Text(
-                                          movieDetailsData!.genres![index].name ?? '',
-                                          style: const TextStyle(
-                                            color: Color.fromRGBO(255, 255, 255, 75),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                       Column(
-                         children: [
-                           const SizedBox(height: 420),
-                           Row(
-                             children: [
-                               Align(
-                                 child: Padding(
-                                   padding: const EdgeInsets.only(left: 15),
-                                   child: Chip(
-                                     backgroundColor: const Color.fromRGBO(240, 205, 86, 1),
-                                     shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(10),
-                                     ),
-                                     label: Row(
-                                       mainAxisSize: MainAxisSize.min,
-                                       children: [
-                                         const Text(
-                                           'Score ',
-                                           style: TextStyle(
-                                             color: Colors.black,
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.w400,
-                                           ),
-                                         ),
-                                         Text(
-                                           '${movieDetailsData!.voteAverage?.toStringAsFixed(1)}',
-                                           style: const TextStyle(
-                                             color: Colors.black,
-                                             fontSize: 15,
-                                             fontWeight: FontWeight.w700,
-                                           ),
-                                         ),
-                                         const Text(
-                                           '/10',
-                                           style: TextStyle(
-                                             color: Colors.black,
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.w400,
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                   ),
-                                 ),
-                               ),
-                               Padding(
-                                 padding: const EdgeInsets.only(left: 6),
-                                 child: Text(
-                                    '${movieDetailsData!.voteCount} votes',
-                                    style: const TextStyle(
-                                      color: Color.fromRGBO(255, 255, 255, 75),
-                                      fontSize: 13.5,
-                                      fontWeight: FontWeight.w400,
+    return WillPopScope(
+      onWillPop: () async {
+        if (widget.previousPage == 'Favorites') {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(
+            builder: (context) => const NavBar(index: 2),
+          )
+          );
+        } else {
+          Navigator.pop(context);
+        }
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  FutureBuilder(
+                    future: getMovieDetailsById(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Stack(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.black,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Color.fromRGBO(15, 15, 15, 1),
+                                      width: 15,
                                     ),
                                   ),
-                               ),
-                               Expanded(
-                                 child: Align(
-                                   alignment: Alignment.centerRight,
-                                   child: Padding(
-                                     padding: const EdgeInsets.only(right: 7),
-                                     child: FloatingActionButton(
-                                       onPressed: () async {
-                                         await _toggleLike();
-                                         if (_isLiked) {
-                                           saveFavId(movieDetailsData!.id!);
-                                         } else {
-                                           deleteFavId(movieDetailsData!.id!);
-                                         }
-                                       },
-                                       backgroundColor: Colors.transparent,
-                                       elevation: 0,
-                                       child: _isLiked
-                                        ? Image.asset(
-                                            'assets/images/FavDetailsOrange.png',
-                                            height: 30,
-                                            width: 30,
-                                          ) : Image.asset(
-                                            'assets/images/favDetails.png',
-                                            height: 30,
-                                            width: 30,
-                                          ),
-                                     ),
-                                   ),
-                                 ),
-                               ),
-                             ],
-                           ),
-                           const SizedBox(height: 13),
-                           Align(
-                             alignment: Alignment.centerLeft,
-                             child: Padding(
-                               padding: const EdgeInsets.only(left: 15, right: 15),
-                               child: Text(
-                                 movieDetailsData!.title ?? '',
-                                 style: const TextStyle(
-                                   color: Colors.white,
-                                   fontSize: 30,
-                                   fontWeight: FontWeight.w600,
-                                   fontFamily: 'Inter'
-                                 ),
-                               ),
-                             ),
-                           ),
-                           const SizedBox(height: 9),
-                           Row(
-                             children: [
-                               Padding(
-                                 padding: const EdgeInsets.only(left: 15),
-                                 child: Text(
-                                   movieDetailsData!.releaseDate?.substring(0, 4) ?? '',
-                                   style: const TextStyle(
-                                     color: Color.fromRGBO(255, 255, 255, 75),
-                                     fontSize: 16,
-                                     fontWeight: FontWeight.w400,
-                                       fontFamily: 'Inter'
-                                   ),
-                                 ),
-                               ),
-                               const Padding(
-                                 padding: EdgeInsets.only(left: 5),
-                                 child: Text(
-                                   '·',
-                                   style: TextStyle(
-                                     color: Color.fromRGBO(255, 255, 255, 75),
-                                     fontSize: 17,
-                                     fontWeight: FontWeight.w600,
-                                       fontFamily: 'Inter'
-                                   ),
-                                 ),
-                               ),
-                               Padding(
-                                 padding: const EdgeInsets.only(left: 5),
-                                 child: Text(
-                                   '${(movieDetailsData!.runtime! / 60).floor()}h ${(movieDetailsData!.runtime! % 60).floor()}m',
-                                   style: const TextStyle(
-                                     color: Color.fromRGBO(255, 255, 255, 75),
-                                     fontSize: 16,
-                                     fontWeight: FontWeight.w400,
-                                       fontFamily: 'Inter'
-                                   ),
-                                 ),
-                               ),
-                             ],
-                           ),
-                            const SizedBox(height: 5),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Text(
-                                  'Country: ${movieDetailsData!.productionCountries!.map((e) => e.name == 'United States of America' ? 'USA' : e.name).toList().join(', ')}',
-                                  style: const TextStyle(
-                                    color: Color.fromRGBO(255, 255, 255, 75),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                      fontFamily: 'Inter'
-                                  ),
+                                ),
+                              child: Image.network(
+                                'https://image.tmdb.org/t/p/w500/${movieDetailsData!.backdropPath}',
+                                fit: BoxFit.cover,
+                                height: 400,
+                                width: double.infinity,
+                              ),
+                            ),
+                            Positioned(
+                              top: 35,
+                              left: 25,
+                              child: FloatingActionButton(
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                onPressed: () {
+                                  if (widget.previousPage == 'Favorites') {
+                                    Navigator.pushReplacement(
+                                        context, MaterialPageRoute(
+                                      builder: (context) => const NavBar(index: 2),
+                                      )
+                                    );
+                                  } else {
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                child: Image.asset(
+                                  'assets/images/backFromDetails.png',
+                                  height: 44,
+                                  width: 44,
                                 ),
                               ),
                             ),
-                           const SizedBox(height: 5),
-                           Align(
-                             alignment: Alignment.centerLeft,
-                             child: Padding(
-                               padding: const EdgeInsets.only(left: 15),
-                               child: Text(
-                                 'Original title: ${movieDetailsData!.originalTitle}',
-                                 style: const TextStyle(
-                                   color: Color.fromRGBO(255, 255, 255, 75),
-                                   fontSize: 16,
-                                   fontWeight: FontWeight.w400,
-                                     fontFamily: 'Inter'
-                                 ),
-                               ),
-                             ),
-                           ),
-                           const SizedBox(height: 20),
-                           Align(
-                             alignment: Alignment.centerLeft,
-                             child: Padding(
-                               padding: const EdgeInsets.only(left: 15, right: 25),
-                               child: Text(
-                                 movieDetailsData!.overview ?? '',
-                                 style: const TextStyle(
-                                     color: Colors.white,
-                                     fontSize: 16,
-                                     fontWeight: FontWeight.w400,
-                                     fontFamily: 'Inter'
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ],
-                       ),
-                     ],
-                     );
-                    } else {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 155, bottom: 155),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                FutureBuilder(
-                  future: getMovieTopCast(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 15, top: 15),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Top cast',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter'
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          ListView(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            children: [
-                              SizedBox(
-                                height: 120,
+                            Positioned(
+                              top: 360,
+                              right: 3,
+                              child: SizedBox(
+                                height: 30,
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: topCastData!.cast!.length,
-                                  padding: const EdgeInsets.only(right: 15),
+                                  itemCount: movieDetailsData!.genres?.length,
                                   itemBuilder: (context, index) {
                                     return Padding(
-                                      padding: const EdgeInsets.only(left: 15),
-                                      child: SizedBox(
-                                        width: 70,
-                                        child: Column(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(30),
-                                              child: Image.network(
-                                                'https://image.tmdb.org/t/p/w500${topCastData!.cast![index].profilePath}',
-                                                height: 70,
-                                                width: 70,
-                                                fit: BoxFit.cover,
-                                              ),
+                                      padding: const EdgeInsets.only(right: 7),
+                                      child: Theme(
+                                        data: ThemeData(canvasColor: Colors.transparent),
+                                        child: Chip(
+                                          backgroundColor: const Color.fromRGBO(36, 37, 41, 0.80),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(9),
+                                          ),
+                                          label: Text(
+                                            movieDetailsData!.genres![index].name ?? '',
+                                            style: const TextStyle(
+                                              color: Color.fromRGBO(255, 255, 255, 75),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
                                             ),
-                                            const SizedBox(height: 5),
-                                            SizedBox(
-                                              width: 70,
-                                              child: Text(
-                                                topCastData!.cast![index].name ?? '',
-                                                maxLines: 2,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
-                                                    fontFamily: 'Inter'
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                      )
                                     );
                                   },
                                 ),
                               ),
-                            ],
+                            ),
+                         Column(
+                           children: [
+                             const SizedBox(height: 420),
+                             Row(
+                               children: [
+                                 Align(
+                                   child: Padding(
+                                     padding: const EdgeInsets.only(left: 15),
+                                     child: Chip(
+                                       backgroundColor: const Color.fromRGBO(240, 205, 86, 1),
+                                       shape: RoundedRectangleBorder(
+                                         borderRadius: BorderRadius.circular(10),
+                                       ),
+                                       label: Row(
+                                         mainAxisSize: MainAxisSize.min,
+                                         children: [
+                                           const Text(
+                                             'Score ',
+                                             style: TextStyle(
+                                               color: Colors.black,
+                                               fontSize: 14,
+                                               fontWeight: FontWeight.w400,
+                                             ),
+                                           ),
+                                           Text(
+                                             '${movieDetailsData!.voteAverage?.toStringAsFixed(1)}',
+                                             style: const TextStyle(
+                                               color: Colors.black,
+                                               fontSize: 15,
+                                               fontWeight: FontWeight.w700,
+                                             ),
+                                           ),
+                                           const Text(
+                                             '/10',
+                                             style: TextStyle(
+                                               color: Colors.black,
+                                               fontSize: 14,
+                                               fontWeight: FontWeight.w400,
+                                             ),
+                                           ),
+                                         ],
+                                       ),
+                                     ),
+                                   ),
+                                 ),
+                                 Padding(
+                                   padding: const EdgeInsets.only(left: 6),
+                                   child: Text(
+                                      '${movieDetailsData!.voteCount} votes',
+                                      style: const TextStyle(
+                                        color: Color.fromRGBO(255, 255, 255, 75),
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                 ),
+                                 Expanded(
+                                   child: Align(
+                                     alignment: Alignment.centerRight,
+                                     child: Padding(
+                                       padding: const EdgeInsets.only(right: 7),
+                                       child: FloatingActionButton(
+                                         onPressed: () async {
+                                           await _toggleLike();
+                                           if (_isLiked) {
+                                             saveFavId(movieDetailsData!.id!);
+                                           } else {
+                                             deleteFavId(movieDetailsData!.id!);
+                                           }
+                                         },
+                                         backgroundColor: Colors.transparent,
+                                         elevation: 0,
+                                         child: _isLiked
+                                          ? Image.asset(
+                                              'assets/images/FavDetailsOrange.png',
+                                              height: 30,
+                                              width: 30,
+                                            ) : Image.asset(
+                                              'assets/images/favDetails.png',
+                                              height: 30,
+                                              width: 30,
+                                            ),
+                                       ),
+                                     ),
+                                   ),
+                                 ),
+                               ],
+                             ),
+                             const SizedBox(height: 13),
+                             Align(
+                               alignment: Alignment.centerLeft,
+                               child: Padding(
+                                 padding: const EdgeInsets.only(left: 15, right: 15),
+                                 child: Text(
+                                   movieDetailsData!.title ?? '',
+                                   style: const TextStyle(
+                                     color: Colors.white,
+                                     fontSize: 30,
+                                     fontWeight: FontWeight.w600,
+                                     fontFamily: 'Inter'
+                                   ),
+                                 ),
+                               ),
+                             ),
+                             const SizedBox(height: 9),
+                             Row(
+                               children: [
+                                 Padding(
+                                   padding: const EdgeInsets.only(left: 15),
+                                   child: Text(
+                                     movieDetailsData!.releaseDate ?? '',
+                                     style: const TextStyle(
+                                       color: Color.fromRGBO(255, 255, 255, 75),
+                                       fontSize: 16,
+                                       fontWeight: FontWeight.w400,
+                                         fontFamily: 'Inter'
+                                     ),
+                                   ),
+                                 ),
+                                 const Padding(
+                                   padding: EdgeInsets.only(left: 5),
+                                   child: Text(
+                                     '·',
+                                     style: TextStyle(
+                                       color: Color.fromRGBO(255, 255, 255, 75),
+                                       fontSize: 17,
+                                       fontWeight: FontWeight.w600,
+                                         fontFamily: 'Inter'
+                                     ),
+                                   ),
+                                 ),
+                                 Padding(
+                                   padding: const EdgeInsets.only(left: 5),
+                                   child: Text(
+                                     '${(movieDetailsData!.runtime! / 60).floor()}h ${(movieDetailsData!.runtime! % 60).floor()}m',
+                                     style: const TextStyle(
+                                       color: Color.fromRGBO(255, 255, 255, 75),
+                                       fontSize: 16,
+                                       fontWeight: FontWeight.w400,
+                                         fontFamily: 'Inter'
+                                     ),
+                                   ),
+                                 ),
+                               ],
+                             ),
+                              const SizedBox(height: 5),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 15),
+                                  child: Text(
+                                    'Country: ${movieDetailsData!.productionCountries!.map((e) => e.name == 'United States of America' ? 'USA' : e.name).toList().join(', ')}',
+                                    style: const TextStyle(
+                                      color: Color.fromRGBO(255, 255, 255, 75),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                        fontFamily: 'Inter'
+                                    ),
+                                  ),
+                                ),
+                              ),
+                             const SizedBox(height: 5),
+                             Align(
+                               alignment: Alignment.centerLeft,
+                               child: Padding(
+                                 padding: const EdgeInsets.only(left: 15),
+                                 child: Text(
+                                   'Original title: ${movieDetailsData!.originalTitle}',
+                                   style: const TextStyle(
+                                     color: Color.fromRGBO(255, 255, 255, 75),
+                                     fontSize: 16,
+                                     fontWeight: FontWeight.w400,
+                                       fontFamily: 'Inter'
+                                   ),
+                                 ),
+                               ),
+                             ),
+                             const SizedBox(height: 20),
+                             Align(
+                               alignment: Alignment.centerLeft,
+                               child: Padding(
+                                 padding: const EdgeInsets.only(left: 15, right: 25),
+                                 child: Text(
+                                   movieDetailsData!.overview ?? '',
+                                   style: const TextStyle(
+                                       color: Colors.white,
+                                       fontSize: 16,
+                                       fontWeight: FontWeight.w400,
+                                       fontFamily: 'Inter'
+                                   ),
+                                 ),
+                               ),
+                             ),
+                           ],
+                         ),
+                       ],
+                       );
+                      } else {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 155, bottom: 155),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
                           ),
-                        ],
-                      );
-                    } else {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 155, bottom: 155),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
-                        ),
-                      );
-                    }
-                  }
-                ),
-                FutureBuilder(
-                    future: getSimilarMovies(),
+                        );
+                      }
+                    },
+                  ),
+                  FutureBuilder(
+                    future: getMovieTopCast(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Column(
                           children: [
+                            const SizedBox(height: 20),
                             const Padding(
                               padding: EdgeInsets.only(left: 15, top: 15),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  'Similar Movies',
+                                  'Top cast',
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.w400,
                                       fontFamily: 'Inter'
                                   ),
                                 ),
@@ -558,46 +483,42 @@ class _MovieDetailsState extends State<MovieDetails> {
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 SizedBox(
-                                  height: 200,
+                                  height: 120,
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: similarMovies!.results!.length,
+                                    itemCount: topCastData!.cast!.length,
                                     padding: const EdgeInsets.only(right: 15),
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.only(left: 15),
                                         child: SizedBox(
-                                          width: 90,
+                                          width: 70,
                                           child: Column(
                                             children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  pushToMovieDetailsPage(similarMovies!.results![index].id ?? 0);
-                                                },
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  child: Image.network(
-                                                    'https://image.tmdb.org/t/p/w500${similarMovies!.results![index].posterPath}',
-                                                    height: 130,
-                                                    width: 90,
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(30),
+                                                child: Image.network(
+                                                  'https://image.tmdb.org/t/p/w500${topCastData!.cast![index].profilePath}',
+                                                  height: 70,
+                                                  width: 70,
+                                                  fit: BoxFit.cover,
                                                 ),
                                               ),
                                               const SizedBox(height: 5),
                                               SizedBox(
                                                 width: 70,
                                                 child: Text(
-                                                  similarMovies!.results![index].title ?? '',
-                                                  maxLines: 4,
+                                                  topCastData!.cast![index].name ?? '',
+                                                  maxLines: 2,
                                                   style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w400,
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
                                                       fontFamily: 'Inter'
                                                   ),
                                                   textAlign: TextAlign.center,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],
@@ -609,7 +530,6 @@ class _MovieDetailsState extends State<MovieDetails> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 20),
                           ],
                         );
                       } else {
@@ -623,8 +543,102 @@ class _MovieDetailsState extends State<MovieDetails> {
                         );
                       }
                     }
-                ),
-              ],
+                  ),
+                  FutureBuilder(
+                      future: getSimilarMovies(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 15, top: 15),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Similar Movies',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Inter'
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              ListView(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                children: [
+                                  SizedBox(
+                                    height: 200,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: similarMovies!.results!.length,
+                                      padding: const EdgeInsets.only(right: 15),
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(left: 15),
+                                          child: SizedBox(
+                                            width: 90,
+                                            child: Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    pushToMovieDetailsPage(similarMovies!.results![index].id ?? 0);
+                                                  },
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    child: Image.network(
+                                                      'https://image.tmdb.org/t/p/w500${similarMovies!.results![index].posterPath}',
+                                                      height: 130,
+                                                      width: 90,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                SizedBox(
+                                                  width: 70,
+                                                  child: Text(
+                                                    similarMovies!.results![index].title ?? '',
+                                                    maxLines: 4,
+                                                    style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w400,
+                                                        fontFamily: 'Inter'
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          );
+                        } else {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 155, bottom: 155),
+                            child: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                            ),
+                          );
+                        }
+                      }
+                  ),
+                ],
+              ),
             ),
           ),
         ),

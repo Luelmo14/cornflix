@@ -115,6 +115,8 @@ class _FavoritesState extends State<Favorites> {
                 ),
               ),
               const SizedBox(height: 10),
+              // check if there are any favorite movies
+
               FutureBuilder(
                 future: _movieDetailsFuture,
                 builder: (context, snapshot) {
@@ -132,7 +134,17 @@ class _FavoritesState extends State<Favorites> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                    '${movie['title']} removed from favorites'),
+                                    '${movie['title']} removed from favorites',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                dismissDirection: DismissDirection.horizontal,
                               ),
                             );
                             setState(() {
@@ -225,7 +237,35 @@ class _FavoritesState extends State<Favorites> {
                       },
                     );
                   } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        SizedBox(height: 100),
+                        Text(
+                            'No favorites? No problem!',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Color.fromRGBO(150, 150, 150, 1),
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                          )
+                        ),
+                        SizedBox(height: 3),
+                        Text(
+                          'Start exploring and add some to your list.',
+                          overflow: TextOverflow.clip,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromRGBO(150, 150, 150, 1),
+                            fontSize: 17,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    );
                   }
                   return const Padding(
                     padding: EdgeInsets.only(top: 155, bottom: 155),

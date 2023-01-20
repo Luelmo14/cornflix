@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../auth.dart';
 import '../data/ChipData.dart';
 import '../data/Chips.dart';
+import 'Login.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
@@ -48,6 +49,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> signOut() async {
     await Auth().signOut();
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   _updateName() {
@@ -83,6 +85,43 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.circular(10)),
               dismissDirection: DismissDirection.horizontal)));
     }
+    setState(() {});
+  }
+
+  deleteUser() {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser != null) {
+      firebaseUser
+          .delete()
+          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: const Text('Account deleted successfully',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+              ),
+              backgroundColor: const Color.fromRGBO(36, 37, 41, 1),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+              dismissDirection: DismissDirection.horizontal,
+              )))
+          .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.toString().substring(
+                  error.toString().indexOf(']') + 2,
+                  error.toString().indexOf(']') + 3)
+                  .toUpperCase() +
+                  error.toString().substring(error.toString().indexOf(']') + 3)),
+              backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(13)),
+              dismissDirection: DismissDirection.horizontal)));
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .delete();
+    }
+    // pop navigation
+    Navigator.pop(context);
     setState(() {});
   }
 
@@ -537,34 +576,39 @@ class _ProfileState extends State<Profile> {
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 20, right: 20),
-                                  child: Container(
-                                    height: 56,
-                                    decoration: const BoxDecoration(
-                                      color: Color.fromRGBO(139, 139, 139, 1),
-                                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                                    ),
-                                    child: TextButton(
-                                      onPressed: () {
-                                        signOut();
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: const [
-                                          ImageIcon(
-                                            AssetImage("assets/images/logoutIcon.png"),
-                                            color: Colors.black,
-                                            size: 22.5,
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            "Log Out",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 17,
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w800),
-                                          ),
-                                        ],
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      signOut();
+                                    },
+                                    child: Container(
+                                      height: 56,
+                                      decoration: const BoxDecoration(
+                                        color: Color.fromRGBO(139, 139, 139, 1),
+                                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                                      ),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          signOut();
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: const [
+                                            ImageIcon(
+                                              AssetImage("assets/images/logoutIcon.png"),
+                                              color: Colors.black,
+                                              size: 22.5,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              "Log Out",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 17,
+                                                  fontFamily: 'Inter',
+                                                  fontWeight: FontWeight.w800),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -622,21 +666,27 @@ class _ProfileState extends State<Profile> {
                                                       Expanded(
                                                         child: Padding(
                                                           padding: const EdgeInsets.only(left: 8),
-                                                          child: Container(
-                                                            height: 35,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: const Color.fromRGBO(243, 134, 71, 1),
-                                                            ),
-                                                            child: TextButton(
-                                                              onPressed: () {
-                                                                //deleteUser();
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Confirm",
-                                                                  style: TextStyle(
-                                                                      color: Colors.white)),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              deleteUser();
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                            child: Container(
+                                                              height: 35,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: const Color.fromRGBO(243, 134, 71, 1),
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  deleteUser();
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text(
+                                                                    "Confirm",
+                                                                    style: TextStyle(
+                                                                        color: Colors.white)),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),

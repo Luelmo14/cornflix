@@ -301,21 +301,42 @@ class _HomeState extends State<Home> {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    GestureDetector(
+                                    InkWell(
                                       onTap: () {
                                         pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
                                       },
-                                      child: Container(
-                                        width: 300,
-                                        height: 240,
-                                        margin: const EdgeInsets.only(left: 3.0, right: 3.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          image: DecorationImage(
-                                            image: CachedNetworkImageProvider(
-                                                'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
-                                            fit: BoxFit.cover,
-                                            filterQuality: FilterQuality.none,
+                                      child: GestureDetector(
+                                        onLongPress: () {
+                                          saveFavId(recommendedMovies?.results?[index].id ?? 0);
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                            content: const Text('Added to favourites',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                            dismissDirection: DismissDirection.horizontal,
+                                            duration: const Duration(milliseconds: 2000),
+                                          ));
+                                        },
+                                        child: Container(
+                                          width: 300,
+                                          height: 240,
+                                          margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(14),
+                                            image: DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                  'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
+                                              fit: BoxFit.cover,
+                                              filterQuality: FilterQuality.none,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -539,11 +560,11 @@ class _HomeState extends State<Home> {
                           options: CarouselOptions(
                             height: 150.0,
                             aspectRatio: 9 / 9,
-                            viewportFraction: 0.35,
+                            viewportFraction: 0.33,
                             initialPage: 3,
                             enableInfiniteScroll: true,
                             reverse: false,
-                            autoPlay: true,
+                            autoPlay: false,
                             autoPlayInterval: const Duration(milliseconds: 200),
                             autoPlayAnimationDuration: const Duration(milliseconds: 1900),
                             autoPlayCurve: Curves.fastOutSlowIn,
@@ -611,7 +632,7 @@ class _HomeState extends State<Home> {
                           options: CarouselOptions(
                             height: 150.0,
                             aspectRatio: 9 / 9,
-                            viewportFraction: 0.35,
+                            viewportFraction: 0.33,
                             initialPage: 3,
                             enableInfiniteScroll: true,
                             reverse: false,

@@ -24,4 +24,8 @@ class Auth {
   Future<void> signOut() async {
     await _auth.signOut();
   }
+
+  Future<void> deleteUser() async {
+    await _auth.currentUser!.delete();
+  }
 }
