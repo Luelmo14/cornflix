@@ -258,33 +258,42 @@ class _MovieDetailsState extends State<MovieDetails> {
                             ),
                             Positioned(
                               top: 360,
-                              right: 3,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: movieDetailsData!.genres?.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                      padding: const EdgeInsets.only(right: 7),
-                                      child: Theme(
-                                        data: ThemeData(canvasColor: Colors.transparent),
-                                        child: Chip(
-                                          backgroundColor: const Color.fromRGBO(36, 37, 41, 0.80),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(9),
-                                          ),
-                                          label: Text(
-                                            movieDetailsData!.genres![index].name ?? '',
-                                            style: const TextStyle(
-                                              color: Color.fromRGBO(255, 255, 255, 75),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: 30,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    reverse: true,
+                                    itemCount: movieDetailsData!.genres?.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: index == movieDetailsData!.genres!.length - 1
+                                            ? const EdgeInsets.only(left: 7, right: 7)
+                                            : const EdgeInsets.only(right: 7),
+                                          child: Theme(
+                                            data: ThemeData(canvasColor: Colors.transparent),
+                                            child: Chip(
+                                              backgroundColor: const Color.fromRGBO(36, 37, 41, 0.80),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(9),
+                                              ),
+                                              label: Text(
+                                                movieDetailsData!.genres![index].name ?? '',
+                                                style: const TextStyle(
+                                                  color: Color.fromRGBO(255, 255, 255, 75),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      )
-                                  );
-                                },
+                                          )
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
 
