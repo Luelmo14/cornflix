@@ -112,9 +112,20 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Image.asset(
-                      'assets/images/logo.png',
-                      height: 83,
+                    Container(
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black38,
+                            offset: Offset(0, 0),
+                            blurRadius: 19,
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        height: 83,
+                      ),
                     ),
                     const SizedBox(height: 18),
                     Row(
@@ -127,6 +138,13 @@ class _RegisterState extends State<Register> {
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.w900,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black87,
+                                  blurRadius: 7,
+                                  offset: Offset(1.2, 1.2),
+                                ),
+                              ],
                             )
                         ),
                         Text(
@@ -136,6 +154,13 @@ class _RegisterState extends State<Register> {
                               color: Color.fromRGBO(255, 56, 56, 1),
                               fontSize: 20,
                               fontWeight: FontWeight.w900,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black45,
+                                  blurRadius: 7,
+                                  offset: Offset(1.2, 1.2),
+                                ),
+                              ],
                             )
                         ),
                       ],
@@ -150,6 +175,13 @@ class _RegisterState extends State<Register> {
                           color: Color.fromRGBO(202, 202, 202, 1),
                           fontSize: 13.5,
                           fontWeight: FontWeight.w500,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black26,
+                              blurRadius: 5,
+                              offset: Offset(0.8, 0.8),
+                            ),
+                          ],
                         )
                     ),
 
@@ -168,6 +200,13 @@ class _RegisterState extends State<Register> {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Container(
                         decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(1, 1.3),
+                                blurRadius: 6,
+                              ),
+                            ],
                             color: const Color.fromRGBO(36, 37, 41, 1),
                             borderRadius: BorderRadius.circular(14)
                         ),
@@ -201,6 +240,13 @@ class _RegisterState extends State<Register> {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Container(
                         decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(1, 1.3),
+                                blurRadius: 6,
+                              ),
+                            ],
                             color: const Color.fromRGBO(36, 37, 41, 1),
                             borderRadius: BorderRadius.circular(14)
                         ),
@@ -234,6 +280,13 @@ class _RegisterState extends State<Register> {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Container(
                         decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(1, 1.3),
+                                blurRadius: 6,
+                              ),
+                            ],
                             color: const Color.fromRGBO(36, 37, 41, 1),
                             borderRadius: BorderRadius.circular(14)
                         ),
@@ -267,6 +320,13 @@ class _RegisterState extends State<Register> {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Container(
                         decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(1, 1.3),
+                                blurRadius: 6,
+                              ),
+                            ],
                             color: const Color.fromRGBO(36, 37, 41, 1),
                             borderRadius: BorderRadius.circular(14)
                         ),
@@ -312,6 +372,13 @@ class _RegisterState extends State<Register> {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Container(
                         decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(1, 1.3),
+                                blurRadius: 6,
+                              ),
+                            ],
                             color: const Color.fromRGBO(36, 37, 41, 1),
                             borderRadius: BorderRadius.circular(14)
                         ),
@@ -360,6 +427,13 @@ class _RegisterState extends State<Register> {
                         child: Container(
                           padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  offset: Offset(1, 1.3),
+                                  blurRadius: 6,
+                                ),
+                              ],
                               color: const Color.fromRGBO(255, 56, 56, 1),
                               borderRadius: BorderRadius.circular(14)
                           ),
@@ -370,7 +444,14 @@ class _RegisterState extends State<Register> {
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: 'Inter'
+                                    fontFamily: 'Inter',
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black12,
+                                      blurRadius: 5,
+                                      offset: Offset(0.5, 0.5),
+                                    ),
+                                  ],
                                 ),
                               )
                           ),
@@ -388,6 +469,13 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color.fromRGBO(202, 202, 202, 1),
+                            shadows: [
+                              Shadow(
+                                color: Colors.black38,
+                                blurRadius: 5,
+                                offset: Offset(0.8, 0.8),
+                              ),
+                            ],
                           ),
                         ),
                         GestureDetector(
@@ -396,7 +484,14 @@ class _RegisterState extends State<Register> {
                             'Sign In',
                             style: TextStyle(
                                 color: Color.fromRGBO(255, 56, 56, 1),
-                                fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black26,
+                                  blurRadius: 5,
+                                  offset: Offset(0.8, 0.8),
+                                ),
+                              ],
                             ),
                           ),
                         )

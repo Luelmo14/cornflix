@@ -20,32 +20,43 @@ class _GenrePickerState extends State<GenrePicker> {
 
   Widget buildChips() => Wrap(
     spacing: 8,
-    children: chips.map((chip) => ActionChip(
-      label: Text(
-          chip.name,
-          style: const TextStyle(
-            fontSize: 16,
+    children: chips.map((chip) => ChipTheme(
+      data: ChipThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+          side: const BorderSide(
+            color: Color.fromRGBO(36, 37, 41, 1),
+            width: 0,
           ),
+        ),
       ),
-      padding: const EdgeInsets.all(8),
-      labelStyle: const TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.w400,
+      child: ActionChip(
+        label: Text(
+            chip.name,
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+        ),
+        padding: const EdgeInsets.all(8),
+        labelStyle: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w400,
+        ),
+        backgroundColor: chip.color,
+        onPressed: () {
+          if (selectedChips.any((element) => element.name == chip.name)) {
+            setState(() {
+              selectedChips.removeWhere((element) => element.name == chip.name);
+              chips = chips.map((c) => c == chip ? chip.copy(color: const Color.fromRGBO(36, 37, 41, 1)) : c).toList();
+            });
+          } else {
+            setState(() {
+              selectedChips.add(chip);
+              chips = chips.map((c) => c == chip ? chip.copy(color: const Color.fromRGBO(255, 56, 56, 1)) : c).toList();
+            });
+          }
+        },
       ),
-      backgroundColor: chip.color,
-      onPressed: () {
-        if (selectedChips.any((element) => element.name == chip.name)) {
-          setState(() {
-            selectedChips.removeWhere((element) => element.name == chip.name);
-            chips = chips.map((c) => c == chip ? chip.copy(color: const Color.fromRGBO(36, 37, 41, 1)) : c).toList();
-          });
-        } else {
-          setState(() {
-            selectedChips.add(chip);
-            chips = chips.map((c) => c == chip ? chip.copy(color: const Color.fromRGBO(255, 56, 56, 1)) : c).toList();
-          });
-        }
-      },
     )).toList(),
   );
 

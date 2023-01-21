@@ -207,6 +207,7 @@ class _HomeState extends State<Home> {
   }
 
   getMoviesFromCountry() async {
+    await fetchUserDismissedMovies();
     for (String languageCode in languageCodes) {
       var client = http.Client();
       var url = Uri.parse(
@@ -216,6 +217,7 @@ class _HomeState extends State<Home> {
         var data = response.body;
         List<dynamic> moviesFromCountryMap = jsonDecode(data)['results'];
         moviesFromCountryMap.removeWhere((e) => e['poster_path'] == null);
+        moviesFromCountryMap.removeWhere((e) => dismissedMovies.contains(e['id']));
 
         moviesFromCountry.clear();
         moviesFromCountry.addAll(moviesFromCountryMap);
@@ -587,8 +589,6 @@ class _HomeState extends State<Home> {
             ),
           ),
         ).show(context);
-
-
       });
       updateFirstAccess();
       _isFirstAccess = false;
@@ -605,9 +605,20 @@ class _HomeState extends State<Home> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/images/logoNoBackground.png',
-                      height: 37,
+                    Container(
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0.55, 0.55),
+                            blurRadius: 7.5,
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        'assets/images/logoNoBackground.png',
+                        height: 37,
+                      ),
                     ),
                     const Text('CornFlix ',
                         style: TextStyle(
@@ -615,6 +626,13 @@ class _HomeState extends State<Home> {
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black87,
+                              blurRadius: 7,
+                              offset: Offset(1.2, 1.2),
+                            ),
+                          ],
                         )),
                   ],
                 ),
@@ -630,6 +648,13 @@ class _HomeState extends State<Home> {
                             color: Colors.white,
                             fontSize: 16.6,
                             fontWeight: FontWeight.w400,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black87,
+                                blurRadius: 7,
+                                offset: Offset(1.2, 1.2),
+                              ),
+                            ],
                           )),
                       GestureDetector(
                         onTap: () {
@@ -646,15 +671,26 @@ class _HomeState extends State<Home> {
                                 ? const Color.fromRGBO(176, 176, 178, 1) : const Color.fromRGBO(255, 255, 255, 1);
                           });
                         },
-                        child: Chip(
-                            backgroundColor: _filterChipColor,
-                            label: Text('Filter by your location',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: _filterChipTextColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ))),
+                        child: ChipTheme(
+                          data: ChipThemeData(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              side: const BorderSide(
+                                color: Color.fromRGBO(36, 37, 41, 1),
+                                width: 0,
+                              ),
+                            ),
+                          ),
+                          child: Chip(
+                              backgroundColor: _filterChipColor,
+                              label: Text('Filter by your location',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    color: _filterChipTextColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ))),
+                        ),
                       ),
                     ],
                   ),
@@ -741,12 +777,18 @@ class _HomeState extends State<Home> {
                                             height: 240,
                                             margin: const EdgeInsets.only(left: 3.0, right: 3.0),
                                             decoration: BoxDecoration(
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: Colors.black45,
+                                                  offset: Offset(1.3, 1.3),
+                                                  blurRadius: 5.5,
+                                                ),
+                                              ],
                                               borderRadius: BorderRadius.circular(14),
                                               image: DecorationImage(
                                                 image: CachedNetworkImageProvider(
                                                     'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
                                                 fit: BoxFit.cover,
-                                                filterQuality: FilterQuality.medium,
                                               ),
                                             ),
                                           ),
@@ -765,6 +807,13 @@ class _HomeState extends State<Home> {
                                               color: Colors.white,
                                               fontSize: 16.2,
                                               fontWeight: FontWeight.w400,
+                                              shadows: [
+                                                Shadow(
+                                                  color: Colors.black87,
+                                                  blurRadius: 7,
+                                                  offset: Offset(1.2, 1.2),
+                                                ),
+                                              ],
                                             )),
                                       ),
                                     ],
@@ -799,16 +848,78 @@ class _HomeState extends State<Home> {
                           );
                         })
                     : FutureBuilder(
-                        future: getMoviesFromCountry(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return CarouselSlider.builder(
-                              itemCount: moviesFromCountryRecommended?.results?.length ?? 0,
-                              itemBuilder: (BuildContext context, int index, int pageViewIndex) {
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
+                    future: getMoviesFromCountry(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return CarouselSlider.builder(
+                          itemCount: moviesFromCountryRecommended?.results?.length ?? 0,
+                          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+                            var movie = moviesFromCountryRecommended?.results?[index];
+                            return Dismissible(
+                              key: Key(movie?.id.toString() ?? ''),
+                              direction: DismissDirection.down,
+                              onDismissed: (direction) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      '${movie?.title} dismissed',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                    dismissDirection: DismissDirection.horizontal,
+                                  ),
+                                );
+                                setState(() {
+                                  moviesFromCountryRecommended?.results?.removeAt(index);
+                                });
+                                deleteFavId(movie?.id ?? 0);
+                                addDismissedMovie(movie?.id ?? 0);
+                                getMoviesFromCountry();
+                                HapticFeedback.mediumImpact();
+                              },
+                              background: Container(
+                                color: const Color.fromRGBO(23, 25, 26, 1),
+                                child: const Icon(
+                                  Icons.delete,
+                                  size: 190,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    highlightColor: const Color.fromRGBO(243, 134, 71, 1),
+                                    splashFactory: InkRipple.splashFactory,
+                                    radius: 5000,
+                                    borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
+                                    onLongPress: () {
+                                      saveFavId(moviesFromCountryRecommended?.results?[index].id ?? 0);
+                                      HapticFeedback.mediumImpact();
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        content: const Text('Added to favourites',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Inter',
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w600
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                        dismissDirection: DismissDirection.horizontal,
+                                        duration: const Duration(milliseconds: 2000),
+                                      ));
+                                    },
+                                    child: GestureDetector(
                                       onTap: () {
                                         pushToMovieDetailsPage(moviesFromCountryRecommended!.results![index].id!);
                                       },
@@ -817,88 +928,77 @@ class _HomeState extends State<Home> {
                                         height: 240,
                                         margin: const EdgeInsets.only(left: 3.0, right: 3.0),
                                         decoration: BoxDecoration(
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black45,
+                                              offset: Offset(1.3, 1.3),
+                                              blurRadius: 5.5,
+                                            ),
+                                          ],
                                           borderRadius: BorderRadius.circular(14),
                                           image: DecorationImage(
                                             image: CachedNetworkImageProvider(
                                                 'https://image.tmdb.org/t/p/w300/${moviesFromCountryRecommended?.results?[index].posterPath}'),
                                             fit: BoxFit.cover,
-                                            filterQuality: FilterQuality.none,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 13, right: 13),
-                                      child: Text(
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          moviesFromCountryRecommended?.results?[index].title ?? '',
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            color: Colors.white,
-                                            fontSize: 16.2,
-                                            fontWeight: FontWeight.w400,
-                                          )),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 7),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              saveFavId(
-                                                  moviesFromCountryRecommended?.results?[index].id ?? 0);
-                                            },
-                                            child: Image.asset(
-                                              'assets/images/fav.png',
-                                              height: 30,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 13, right: 13),
+                                    child: Text(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        moviesFromCountryRecommended?.results?[index].title ?? '',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          color: Colors.white,
+                                          fontSize: 16.2,
+                                          fontWeight: FontWeight.w400,
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.black87,
+                                              blurRadius: 7,
+                                              offset: Offset(1.2, 1.2),
                                             ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 7),
-                                          child: Image.asset(
-                                            'assets/images/dislike.png',
-                                            height: 30,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                              options: CarouselOptions(
-                                height: 360.0,
-                                viewportFraction: 0.55,
-                                initialPage: 0,
-                                enableInfiniteScroll: true,
-                                reverse: false,
-                                autoPlay: true,
-                                autoPlayInterval: const Duration(seconds: 8),
-                                autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                enlargeCenterPage: true,
-                                scrollDirection: Axis.horizontal,
-                                enlargeFactor: 0.23,
+                                          ],
+                                        )),
+                                  ),
+                                ],
                               ),
                             );
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-                          return const Padding(
-                            padding: EdgeInsets.only(top: 155, bottom: 155),
-                            child: SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
-                            ),
-                          );
-                        }),
-                const SizedBox(height: 5),
+                          },
+                          options: CarouselOptions(
+                            height: 290,
+                            viewportFraction: 0.58,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: true,
+                            autoPlayInterval: const Duration(seconds: 9),
+                            autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            enlargeCenterPage: true,
+                            scrollDirection: Axis.horizontal,
+                            enlargeFactor: 0.16,
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 155, bottom: 155),
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                        ),
+                      );
+                    }),
+                const SizedBox(height: 7),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
@@ -909,6 +1009,13 @@ class _HomeState extends State<Home> {
                           color: Colors.white,
                           fontSize: 16.6,
                           fontWeight: FontWeight.w400,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black87,
+                              blurRadius: 7,
+                              offset: Offset(1.2, 1.2),
+                            ),
+                          ],
                         )),
                   ),
                 ),
@@ -931,12 +1038,18 @@ class _HomeState extends State<Home> {
                                     height: 120,
                                     margin: const EdgeInsets.only(left: 5.0, right: 5.0),
                                     decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black45,
+                                          offset: Offset(1.3, 1.3),
+                                          blurRadius: 5.5,
+                                        ),
+                                      ],
                                       borderRadius: BorderRadius.circular(14),
                                       image: DecorationImage(
                                         image: CachedNetworkImageProvider(
                                             'https://image.tmdb.org/t/p/w300/${boxOfficeMovies?.results?[index].posterPath}'),
                                         fit: BoxFit.cover,
-                                        filterQuality: FilterQuality.none,
                                       ),
                                     ),
                                   ),
@@ -981,6 +1094,13 @@ class _HomeState extends State<Home> {
                           color: Colors.white,
                           fontSize: 16.6,
                           fontWeight: FontWeight.w400,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black87,
+                              blurRadius: 7,
+                              offset: Offset(1.2, 1.2),
+                            ),
+                          ],
                         )),
                   ),
                 ),
@@ -1003,6 +1123,13 @@ class _HomeState extends State<Home> {
                                     height: 120,
                                     margin: const EdgeInsets.only(left: 5.0, right: 5.0),
                                     decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black45,
+                                          offset: Offset(1.3, 1.3),
+                                          blurRadius: 5.5,
+                                        ),
+                                      ],
                                       borderRadius: BorderRadius.circular(14),
                                       image: DecorationImage(
                                         image: CachedNetworkImageProvider(

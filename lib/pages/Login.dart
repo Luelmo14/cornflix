@@ -63,9 +63,20 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 45),
-                Image.asset(
-                  'assets/images/logo.png',
-                  height: 83,
+                Container(
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black38,
+                        offset: Offset(0, 0),
+                        blurRadius: 19,
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 83,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 Row(
@@ -78,6 +89,13 @@ class _LoginState extends State<Login> {
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black87,
+                            blurRadius: 7,
+                            offset: Offset(1.2, 1.2),
+                          ),
+                        ],
                       )
                     ),
                     Text(
@@ -87,6 +105,13 @@ class _LoginState extends State<Login> {
                         color: Color.fromRGBO(255, 56, 56, 1),
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black45,
+                            blurRadius: 7,
+                            offset: Offset(1.2, 1.2),
+                          ),
+                        ],
                       )
                     ),
                   ],
@@ -101,6 +126,13 @@ class _LoginState extends State<Login> {
                     color: Color.fromRGBO(202, 202, 202, 1),
                     fontSize: 13.5,
                     fontWeight: FontWeight.w500,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        blurRadius: 5,
+                        offset: Offset(0.8, 0.8),
+                      ),
+                    ],
                   )
                 ),
 
@@ -119,6 +151,13 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Container(
                     decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          offset: Offset(1, 1.3),
+                          blurRadius: 6,
+                        ),
+                      ],
                       color: const Color.fromRGBO(36, 37, 41, 1),
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -152,6 +191,13 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.only(left: 25.0, right: 25.0),
                   child: Container(
                     decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(1, 1.3),
+                            blurRadius: 6,
+                          ),
+                        ],
                         color: const Color.fromRGBO(36, 37, 41, 1),
                         borderRadius: BorderRadius.circular(14)
                     ),
@@ -200,6 +246,13 @@ class _LoginState extends State<Login> {
                     child: Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(1, 1.3),
+                              blurRadius: 6,
+                            ),
+                          ],
                         color: const Color.fromRGBO(255, 56, 56, 1),
                         borderRadius: BorderRadius.circular(14)
                       ),
@@ -211,6 +264,13 @@ class _LoginState extends State<Login> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Inter',
+                            shadows: [
+                              Shadow(
+                                color: Colors.black12,
+                                blurRadius: 5,
+                                offset: Offset(0.5, 0.5),
+                              ),
+                            ],
                           ),
                         )
                       ),
@@ -229,6 +289,13 @@ class _LoginState extends State<Login> {
                           fontWeight: FontWeight.bold,
                           color: Color.fromRGBO(202, 202, 202, 1),
                           fontFamily: 'Inter',
+                        shadows: [
+                          Shadow(
+                            color: Colors.black38,
+                            blurRadius: 5,
+                            offset: Offset(0.8, 0.8),
+                          ),
+                        ],
                       ),
                     ),
                     GestureDetector(
@@ -239,6 +306,13 @@ class _LoginState extends State<Login> {
                           color: Color.fromRGBO(255, 56, 56, 1),
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Inter',
+                          shadows: [
+                            Shadow(
+                              color: Colors.black26,
+                              blurRadius: 5,
+                              offset: Offset(0.8, 0.8),
+                            ),
+                          ],
                         ),
                       ),
                     )

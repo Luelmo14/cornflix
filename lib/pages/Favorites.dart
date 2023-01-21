@@ -86,9 +86,20 @@ class _FavoritesState extends State<Favorites> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/logoNoBackground.png',
-                    height: 37,
+                  Container(
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          offset: Offset(0.55, 0.55),
+                          blurRadius: 7.5,
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      'assets/images/logoNoBackground.png',
+                      height: 37,
+                    ),
                   ),
                   const Text('CornFlix ',
                       style: TextStyle(
@@ -96,6 +107,13 @@ class _FavoritesState extends State<Favorites> {
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black87,
+                            blurRadius: 7,
+                            offset: Offset(1.2, 1.2),
+                          ),
+                        ],
                       )),
                 ],
               ),
@@ -110,6 +128,13 @@ class _FavoritesState extends State<Favorites> {
                       color: Colors.white,
                       fontSize: 18.5,
                       fontWeight: FontWeight.w400,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black87,
+                          blurRadius: 7,
+                          offset: Offset(1.2, 1.2),
+                        ),
+                      ],
                     )
                   ),
                 ),

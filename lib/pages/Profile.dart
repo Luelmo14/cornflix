@@ -175,13 +175,27 @@ class _ProfileState extends State<Profile> {
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 27,
-                                      fontWeight: FontWeight.bold)),
+                                      fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black87,
+                                        blurRadius: 7,
+                                        offset: Offset(1.2, 1.2),
+                                      ),
+                                    ],)),
                               const SizedBox(width: 10),
                               Text(surname,
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 27,
-                                      fontWeight: FontWeight.bold)),
+                                      fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black87,
+                                        blurRadius: 7,
+                                        offset: Offset(1.2, 1.2),
+                                      ),
+                                    ],)),
                             ],
                           ),
                           const SizedBox(height: 55),
@@ -190,6 +204,13 @@ class _ProfileState extends State<Profile> {
                             child: Container(
                               height: 55,
                               decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    offset: Offset(1, 1.3),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                                 borderRadius: BorderRadius.circular(12),
                                 color: const Color.fromRGBO(36, 37, 41, 1),
                               ),
@@ -307,6 +328,13 @@ class _ProfileState extends State<Profile> {
                             child: Container(
                               height: 55,
                               decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    offset: Offset(1, 1.3),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                                 borderRadius: BorderRadius.circular(12),
                                 color: const Color.fromRGBO(36, 37, 41, 1),
                               ),
@@ -423,6 +451,13 @@ class _ProfileState extends State<Profile> {
                             child: Container(
                               height: 55,
                               decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    offset: Offset(1, 1.3),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                                 borderRadius: BorderRadius.circular(12),
                                 color: const Color.fromRGBO(36, 37, 41, 1),
                               ),
@@ -539,6 +574,13 @@ class _ProfileState extends State<Profile> {
                             child: Container(
                               height: 420,
                               decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    offset: Offset(1, 1.3),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                                 borderRadius: BorderRadius.circular(12),
                                 color: const Color.fromRGBO(36, 37, 41, 1),
                               ),
@@ -583,6 +625,13 @@ class _ProfileState extends State<Profile> {
                                     child: Container(
                                       height: 56,
                                       decoration: const BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            offset: Offset(1, 1.3),
+                                            blurRadius: 6,
+                                          ),
+                                        ],
                                         color: Color.fromRGBO(139, 139, 139, 1),
                                         borderRadius: BorderRadius.all(Radius.circular(12)),
                                       ),
@@ -625,6 +674,13 @@ class _ProfileState extends State<Profile> {
                                   child: Container(
                                     height: 56,
                                     decoration: const BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          offset: Offset(1, 1.3),
+                                          blurRadius: 6,
+                                        ),
+                                      ],
                                       color: Color.fromRGBO(220, 70, 70, 1),
                                       borderRadius: BorderRadius.all(Radius.circular(12)),
                                     ),
@@ -745,39 +801,50 @@ class _ProfileState extends State<Profile> {
     for (var chipData in Chips.all) {
       var chip = StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-        return ActionChip(
-            label: Text(chipData.name,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400)),
-            padding: const EdgeInsets.all(8),
-            backgroundColor: selectedGenres[chipData.id] == true || genreIds.contains(chipData.id)
-            ? const Color.fromRGBO(255, 56, 56, 1)
-                : const Color.fromRGBO(65, 66, 70, 1),
-            onPressed: () {
-              setState(() {
-                selectedGenres[chipData.id] = !(selectedGenres[chipData.id] == true);
-                if (selectedGenres[chipData.id] == true) {
-                  if (!genreIds.contains(chipData.id)) {
-                    setState(() {
-                      genreIds.add(chipData.id);
-                    });
+        return ChipTheme(
+          data: ChipThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+              side: const BorderSide(
+                color: Color.fromRGBO(36, 37, 41, 1),
+                width: 0,
+              ),
+            ),
+          ),
+          child: ActionChip(
+              label: Text(chipData.name,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400)),
+              padding: const EdgeInsets.all(8),
+              backgroundColor: selectedGenres[chipData.id] == true || genreIds.contains(chipData.id)
+              ? const Color.fromRGBO(255, 56, 56, 1)
+                  : const Color.fromRGBO(65, 66, 70, 1),
+              onPressed: () {
+                setState(() {
+                  selectedGenres[chipData.id] = !(selectedGenres[chipData.id] == true);
+                  if (selectedGenres[chipData.id] == true) {
+                    if (!genreIds.contains(chipData.id)) {
+                      setState(() {
+                        genreIds.add(chipData.id);
+                      });
+                    } else {
+                      selectedGenres[chipData.id] = false;
+                      setState(() {
+                        genreIds.remove(chipData.id);
+                      });
+                    }
                   } else {
-                    selectedGenres[chipData.id] = false;
                     setState(() {
                       genreIds.remove(chipData.id);
                     });
                   }
-                } else {
-                  setState(() {
-                    genreIds.remove(chipData.id);
-                  });
-                }
-                _updateFavouriteGenres();
-              });
-            },
+                  _updateFavouriteGenres();
+                });
+              },
+          ),
         );
           },
       );

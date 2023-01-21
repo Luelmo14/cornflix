@@ -115,9 +115,20 @@ class _SearchState extends State<Search> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/logoNoBackground.png',
-                    height: 37,
+                  Container(
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          offset: Offset(0.55, 0.55),
+                          blurRadius: 7.5,
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      'assets/images/logoNoBackground.png',
+                      height: 37,
+                    ),
                   ),
                   const Text('CornFlix ',
                       style: TextStyle(
@@ -125,6 +136,13 @@ class _SearchState extends State<Search> {
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black87,
+                            blurRadius: 7,
+                            offset: Offset(1.2, 1.2),
+                          ),
+                        ],
                       )),
                 ],
               ),
@@ -134,6 +152,13 @@ class _SearchState extends State<Search> {
                 child: Container(
                   height: 55,
                   decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(1.3, 1.3),
+                        blurRadius: 5.5,
+                      ),
+                    ],
                     color: const Color.fromRGBO(36, 37, 41, 1),
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -202,6 +227,13 @@ class _SearchState extends State<Search> {
                               margin: const EdgeInsets.only(top: 15),
                               height: 150,
                               decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black38,
+                                    offset: Offset(1.3, 1.3),
+                                    blurRadius: 5.5,
+                                  ),
+                                ],
                                 color: const Color.fromRGBO(36, 37, 41, 1),
                                 borderRadius: BorderRadius.circular(15),
                               ),
