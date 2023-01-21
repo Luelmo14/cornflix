@@ -13,6 +13,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   String? errorMessage = '';
+  bool hidePassword = true;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -124,6 +125,7 @@ class _LoginState extends State<Login> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
+                        keyboardType: TextInputType.emailAddress,
                         controller: emailController,
                         style: const TextStyle(
                           color: Colors.white,
@@ -156,16 +158,28 @@ class _LoginState extends State<Login> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
-                        obscureText: true,
+                        obscureText: hidePassword,
                         controller: passwordController,
                         style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'Inter',
                         ),
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  hidePassword = !hidePassword;
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: Color.fromRGBO(202, 202, 202, 1),
+                                size: 21,
+                              )
+                          ),
                           border: InputBorder.none,
                           hintText: 'Password',
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Color.fromRGBO(202, 202, 202, 1),
                             fontFamily: 'Inter',
                             fontSize: 15,

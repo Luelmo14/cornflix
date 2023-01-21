@@ -12,6 +12,8 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   String? errorMessage = '';
+  bool hidePassword = true;
+  bool hideConfirmPassword = true;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -93,21 +95,23 @@ class _RegisterState extends State<Register> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 35),
+                    const SizedBox(height: 40),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 30),
                       child: Row(
                         children: [
                           GestureDetector(
                             onTap: widget.showLoginPage,
                             child: Image.asset(
                               'assets/images/backArrow.png',
+                              height: 30,
+                              width: 30,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 20),
                     Image.asset(
                       'assets/images/logo.png',
                       height: 83,
@@ -170,6 +174,7 @@ class _RegisterState extends State<Register> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
+                              keyboardType: TextInputType.name,
                               controller: nameController,
                               style: const TextStyle(
                                 color: Colors.white,
@@ -202,6 +207,7 @@ class _RegisterState extends State<Register> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
+                              keyboardType: TextInputType.name,
                               controller: surnameController,
                               style: const TextStyle(
                                 color: Colors.white,
@@ -234,6 +240,7 @@ class _RegisterState extends State<Register> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
+                              keyboardType: TextInputType.emailAddress,
                               controller: emailController,
                               style: const TextStyle(
                                 color: Colors.white,
@@ -266,16 +273,28 @@ class _RegisterState extends State<Register> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
-                              obscureText: true,
+                              obscureText: hidePassword,
                               controller: passwordController,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'Inter',
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          hidePassword = !hidePassword;
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        color: Color.fromRGBO(202, 202, 202, 1),
+                                        size: 21,
+                                      )
+                                  ),
                                 border: InputBorder.none,
                                 hintText: 'Password',
-                                  hintStyle: TextStyle(
+                                  hintStyle: const TextStyle(
                                     color: Color.fromRGBO(202, 202, 202, 1),
                                     fontFamily: 'Inter',
                                     fontSize: 15,
@@ -299,16 +318,28 @@ class _RegisterState extends State<Register> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
-                              obscureText: true,
+                              obscureText: hideConfirmPassword,
                               controller: confirmPasswordController,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'Inter',
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          hideConfirmPassword = !hideConfirmPassword;
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        color: Color.fromRGBO(202, 202, 202, 1),
+                                        size: 21,
+                                      )
+                                  ),
                                 border: InputBorder.none,
                                 hintText: 'Confirm Password',
-                                  hintStyle: TextStyle(
+                                  hintStyle: const TextStyle(
                                     color: Color.fromRGBO(202, 202, 202, 1),
                                     fontFamily: 'Inter',
                                     fontSize: 15,

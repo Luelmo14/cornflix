@@ -259,14 +259,12 @@ class _MovieDetailsState extends State<MovieDetails> {
                             Positioned(
                               top: 360,
                               right: 3,
-                              child: SizedBox(
-                                height: 30,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: movieDetailsData!.genres?.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: movieDetailsData!.genres?.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
                                       padding: const EdgeInsets.only(right: 7),
                                       child: Theme(
                                         data: ThemeData(canvasColor: Colors.transparent),
@@ -285,11 +283,11 @@ class _MovieDetailsState extends State<MovieDetails> {
                                           ),
                                         ),
                                       )
-                                    );
-                                  },
-                                ),
+                                  );
+                                },
                               ),
                             ),
+
                          Column(
                            children: [
                              const SizedBox(height: 420),
