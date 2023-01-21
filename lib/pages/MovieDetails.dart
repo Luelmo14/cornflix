@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../data/MovieDetailsData.dart';
+import '../data/VideosData.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MovieDetails extends StatefulWidget {
   final int id;
@@ -25,6 +27,8 @@ class MovieDetails extends StatefulWidget {
 
 class _MovieDetailsState extends State<MovieDetails> {
   MovieDetailsData? movieDetailsData;
+  VideosData? trailerVideosData;
+  VideosData? clipsVideosData;
   final user = FirebaseAuth.instance.currentUser;
   TopCastData? topCastData;
   RecommendedMovies? similarMovies;
@@ -115,6 +119,46 @@ class _MovieDetailsState extends State<MovieDetails> {
       similarMovies = RecommendedMovies.fromJson(jsonData);
       similarMovies!.results?.removeWhere((element) => element.posterPath == null);
       return similarMovies;
+
+    } else {
+      // ignore: avoid_print
+      print(response.statusCode);
+    }
+  }
+
+  getTrailerVideos() async {
+    int id = widget.id;
+    var client = http.Client();
+    var url = Uri.parse('https://api.themoviedb.org/3/movie/$id/videos?api_key=b5f80d427803f2753428de379acc4337&language=en-US');
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var data = response.body;
+
+      Map<String, dynamic> jsonData = jsonDecode(data);
+      trailerVideosData = VideosData.fromJson(jsonData);
+      trailerVideosData!.results?.removeWhere((element) => element.type != 'Trailer');
+      return trailerVideosData;
+
+    } else {
+      // ignore: avoid_print
+      print(response.statusCode);
+    }
+  }
+
+  getClipsVideos() async {
+    int id = widget.id;
+    var client = http.Client();
+    var url = Uri.parse('https://api.themoviedb.org/3/movie/$id/videos?api_key=b5f80d427803f2753428de379acc4337&language=en-US');
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var data = response.body;
+
+      Map<String, dynamic> jsonData = jsonDecode(data);
+      clipsVideosData = VideosData.fromJson(jsonData);
+      clipsVideosData!.results?.removeWhere((element) => element.type != 'Clip');
+      return clipsVideosData;
 
     } else {
       // ignore: avoid_print
@@ -458,6 +502,50 @@ class _MovieDetailsState extends State<MovieDetails> {
                   FutureBuilder(
                     future: getMovieTopCast(),
                     builder: (context, snapshot) {
+                      if (topCastData?.cast?.isEmpty ?? true) {
+                        return Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 15, top: 15),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Top cast',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter'
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(
+                                  Icons.recent_actors,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 6),
+                                Text('No cast found',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        );
+                      }
                       if (snapshot.hasData) {
                         return Column(
                           children: [
@@ -547,6 +635,50 @@ class _MovieDetailsState extends State<MovieDetails> {
                   FutureBuilder(
                       future: getSimilarMovies(),
                       builder: (context, snapshot) {
+                        if (similarMovies?.results?.isEmpty ?? true) {
+                          return Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 15, top: 15),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Similar Movies',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Inter'
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.movie_creation_outlined,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text('No similar movies found',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          );
+                        }
                         if (snapshot.hasData) {
                           return Column(
                             children: [
@@ -622,7 +754,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                             ],
                           );
                         } else {
@@ -636,6 +768,340 @@ class _MovieDetailsState extends State<MovieDetails> {
                           );
                         }
                       }
+                  ),
+                  FutureBuilder(
+                    future: getTrailerVideos(),
+                    builder: (context, snapshot) {
+                      if (trailerVideosData?.results?.isEmpty ?? true) {
+                        return Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 15, top: 15),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Trailers',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter'
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(
+                                  Icons.video_library_rounded,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 6),
+                                Text('This movie has no trailers',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        );
+                      }
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 15, top: 15),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Trailers',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter'
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            ListView(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: trailerVideosData!.results!.length,
+                                  padding: const EdgeInsets.only(right: 15),
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 15, right: 15),
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(13),
+                                            child: YoutubePlayerBuilder(
+                                              player: YoutubePlayer(
+                                                controller: YoutubePlayerController(
+                                                  initialVideoId: trailerVideosData!.results![index].key ?? '',
+                                                  flags: const YoutubePlayerFlags(
+                                                    autoPlay: false,
+                                                    mute: false,
+                                                  ),
+                                                ),
+                                                onReady: () {
+                                                  print('Player is ready.');
+                                                },
+                                                bottomActions: [
+                                                  CurrentPosition(),
+                                                  const SizedBox(width: 3),
+                                                  ProgressBar(isExpanded: true, colors: const ProgressBarColors(
+                                                    playedColor: Color.fromRGBO(243, 134, 71, 1),
+                                                    handleColor: Color.fromRGBO(253, 104, 51, 1),
+                                                  ),),
+                                                  const SizedBox(width: 3),
+                                                  RemainingDuration(),
+                                                ],
+                                                topActions: [
+                                                  const SizedBox(width: 8.0),
+                                                  Expanded(
+                                                    child: Text(
+                                                      trailerVideosData!.results![index].name ?? '',
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16.0,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8.0),
+                                                ],
+                                                showVideoProgressIndicator: true,
+                                                progressIndicatorColor: const Color.fromRGBO(243, 134, 71, 1),
+                                                progressColors: const ProgressBarColors(
+                                                  playedColor: Color.fromRGBO(243, 134, 71, 1),
+                                                  handleColor: Color.fromRGBO(253, 104, 51, 1),
+                                                ),
+                                              ), builder: (context , player ) => player,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 1.5, left: 20, right: 20),
+                                            child: Text(
+                                              trailerVideosData!.results![index].name ?? '',
+                                              maxLines: 2,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                  fontFamily: 'Inter'
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 15),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 155, bottom: 155),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                          ),
+                        );
+                      }
+                    }
+                  ),
+                  const SizedBox(height: 10),
+                  FutureBuilder(
+                    future: getClipsVideos(),
+                    builder: (context, snapshot) {
+                      if (clipsVideosData?.results?.isEmpty ?? true) {
+                        return Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 15, top: 15),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Clips',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter'
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(
+                                  Icons.video_file_rounded,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 6),
+                                Text('This movie has no clips',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        );
+                      }
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 15, top: 15),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Clips',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter'
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            ListView(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: clipsVideosData!.results!.length,
+                                  padding: const EdgeInsets.only(right: 15),
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 15, right: 15),
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(13),
+                                            child: YoutubePlayerBuilder(
+                                              player: YoutubePlayer(
+                                                controller: YoutubePlayerController(
+                                                  initialVideoId: clipsVideosData!.results![index].key ?? '',
+                                                  flags: const YoutubePlayerFlags(
+                                                    autoPlay: false,
+                                                    mute: false,
+                                                  ),
+                                                ),
+                                                onReady: () {
+                                                  print('Player is ready.');
+                                                },
+                                                bottomActions: [
+                                                  CurrentPosition(),
+                                                  const SizedBox(width: 3),
+                                                  ProgressBar(isExpanded: true, colors: const ProgressBarColors(
+                                                    playedColor: Color.fromRGBO(243, 134, 71, 1),
+                                                    handleColor: Color.fromRGBO(253, 104, 51, 1),
+                                                  ),),
+                                                  const SizedBox(width: 3),
+                                                  RemainingDuration(),
+                                                ],
+                                                topActions: [
+                                                  const SizedBox(width: 8.0),
+                                                  Expanded(
+                                                    child: Text(
+                                                      clipsVideosData!.results![index].name ?? '',
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16.0,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8.0),
+                                                ],
+                                                showVideoProgressIndicator: true,
+                                                progressIndicatorColor: const Color.fromRGBO(243, 134, 71, 1),
+                                                progressColors: const ProgressBarColors(
+                                                  playedColor: Color.fromRGBO(243, 134, 71, 1),
+                                                  handleColor: Color.fromRGBO(253, 104, 51, 1),
+                                                ),
+                                              ), builder: (context , player ) => player,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 1.5, left: 20, right: 20),
+                                            child: Text(
+                                              clipsVideosData!.results![index].name ?? '',
+                                              maxLines: 2,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                  fontFamily: 'Inter'
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 15),
+                                          const SizedBox(height: 15),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 155, bottom: 155),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                          ),
+                        );
+                      }
+                    }
                   ),
                 ],
               ),

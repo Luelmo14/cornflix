@@ -26,6 +26,7 @@ dependencies:
   geolocator: ^9.0.2
   geocoding: ^2.0.5
   another_flushbar: ^1.12.29
+  youtube_player_flutter: ^8.1.2
 
 dev_dependencies:
   flutter_test:
