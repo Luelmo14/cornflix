@@ -222,7 +222,7 @@ class _SearchState extends State<Search> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const SizedBox(height: 10),
+                                      const SizedBox(height: 14),
                                       SizedBox(
                                         width: MediaQuery.of(context).size.width - 170,
                                         child: Text(
@@ -234,8 +234,8 @@ class _SearchState extends State<Search> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                           softWrap: true,
-                                          overflow: TextOverflow.clip,
-                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
                                         ),
                                       ),
                                       const SizedBox(height: 10),

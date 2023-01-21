@@ -226,7 +226,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 ),
                               child: Image.network(
-                                'https://image.tmdb.org/t/p/w500/${movieDetailsData!.backdropPath}',
+                                'https://image.tmdb.org/t/p/original/${movieDetailsData!.backdropPath ?? movieDetailsData!.posterPath}',
                                 fit: BoxFit.cover,
                                 height: 400,
                                 width: double.infinity,
@@ -502,51 +502,51 @@ class _MovieDetailsState extends State<MovieDetails> {
                   FutureBuilder(
                     future: getMovieTopCast(),
                     builder: (context, snapshot) {
-                      if (topCastData?.cast?.isEmpty ?? true) {
-                        return Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15, top: 15),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Top cast',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: 'Inter'
+                      if (snapshot.hasData) {
+                        if (topCastData?.cast?.isEmpty ?? true) {
+                          return Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 15, top: 15),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Top cast',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Inter'
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
-                                  Icons.recent_actors,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 6),
-                                Text('No cast found',
-                                  style: TextStyle(
+                              const SizedBox(height: 15),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.recent_actors,
                                     color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                    fontStyle: FontStyle.italic,
+                                    size: 18,
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                          ],
-                        );
-                      }
-                      if (snapshot.hasData) {
+                                  SizedBox(width: 6),
+                                  Text('No cast found',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          );
+                        }
                         return Column(
                           children: [
                             const SizedBox(height: 20),
@@ -635,51 +635,51 @@ class _MovieDetailsState extends State<MovieDetails> {
                   FutureBuilder(
                       future: getSimilarMovies(),
                       builder: (context, snapshot) {
-                        if (similarMovies?.results?.isEmpty ?? true) {
-                          return Column(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 15, top: 15),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Similar Movies',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.w400,
-                                        fontFamily: 'Inter'
+                        if (snapshot.hasData) {
+                          if (similarMovies?.results?.isEmpty ?? true) {
+                            return Column(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 15, top: 15),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      'Similar Movies',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 23,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'Inter'
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(
-                                    Icons.movie_creation_outlined,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text('No similar movies found',
-                                    style: TextStyle(
+                                const SizedBox(height: 15),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.movie_creation_outlined,
                                       color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: 'Inter',
-                                      fontStyle: FontStyle.italic,
+                                      size: 18,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                          );
-                        }
-                        if (snapshot.hasData) {
+                                    SizedBox(width: 6),
+                                    Text('No similar movies found',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Inter',
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            );
+                          }
                           return Column(
                             children: [
                               const Padding(
@@ -754,7 +754,6 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
                             ],
                           );
                         } else {
@@ -772,51 +771,51 @@ class _MovieDetailsState extends State<MovieDetails> {
                   FutureBuilder(
                     future: getTrailerVideos(),
                     builder: (context, snapshot) {
-                      if (trailerVideosData?.results?.isEmpty ?? true) {
-                        return Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15, top: 15),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Trailers',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: 'Inter'
+                      if (snapshot.hasData) {
+                        if (trailerVideosData?.results?.isEmpty ?? true) {
+                          return Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 15, top: 15),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Trailers',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Inter'
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
-                                  Icons.video_library_rounded,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 6),
-                                Text('This movie has no trailers',
-                                  style: TextStyle(
+                              const SizedBox(height: 15),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.video_library_rounded,
                                     color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                    fontStyle: FontStyle.italic,
+                                    size: 18,
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                          ],
-                        );
-                      }
-                      if (snapshot.hasData) {
+                                  SizedBox(width: 6),
+                                  Text('This movie has no trailers',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          );
+                        }
                         return Column(
                           children: [
                             const Padding(
@@ -939,51 +938,51 @@ class _MovieDetailsState extends State<MovieDetails> {
                   FutureBuilder(
                     future: getClipsVideos(),
                     builder: (context, snapshot) {
-                      if (clipsVideosData?.results?.isEmpty ?? true) {
-                        return Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15, top: 15),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Clips',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: 'Inter'
+                      if (snapshot.hasData) {
+                        if (clipsVideosData?.results?.isEmpty ?? true) {
+                          return Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 15, top: 15),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Clips',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'Inter'
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
-                                  Icons.video_file_rounded,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 6),
-                                Text('This movie has no clips',
-                                  style: TextStyle(
+                              const SizedBox(height: 15),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.video_file_rounded,
                                     color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                    fontStyle: FontStyle.italic,
+                                    size: 18,
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 40),
-                          ],
-                        );
-                      }
-                      if (snapshot.hasData) {
+                                  SizedBox(width: 6),
+                                  Text('This movie has no clips',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 40),
+                            ],
+                          );
+                        }
                         return Column(
                           children: [
                             const Padding(
