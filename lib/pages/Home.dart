@@ -82,6 +82,7 @@ class _HomeState extends State<Home> {
   getRecommendedMovies() async {
     await fetchUserFavGenres();
     await fetchUserDismissedMovies();
+    Map<String, dynamic> recommendedMoviesMap = {};
 
     var client = http.Client();
     var uri = 'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=';
@@ -97,16 +98,39 @@ class _HomeState extends State<Home> {
     if (response.statusCode == 200) {
       var data = response.body;
 
-      Map<String, dynamic> recommendedMoviesMap = jsonDecode(data);
+      recommendedMoviesMap = jsonDecode(data);
       recommendedMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
       recommendedMoviesMap['results'].removeWhere((e) => dismissedMovies.contains(e['id']));
 
-      return recommendedMovies = RecommendedMovies.fromJson(recommendedMoviesMap);
+      while (recommendedMoviesMap['results'].length < 10) {
+        var auxGenreIds = genreIds;
+        auxGenreIds.shuffle();
+        genreIds.removeLast();
+        uri = 'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=';
+        for (var i = 0; i < genreIds.length; i++) {
+          uri += genreIds[i].toString();
+          if (i != genreIds.length - 1) {
+            uri += '%2C';
+          }
+        }
+        url = Uri.parse(uri);
+        response = await client.get(url);
 
+        if (response.statusCode == 200) {
+          data = response.body;
+          recommendedMoviesMap = jsonDecode(data);
+          recommendedMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
+          recommendedMoviesMap['results'].removeWhere((e) => dismissedMovies.contains(e['id']));
+        } else {
+          // ignore: avoid_print
+          print(response.statusCode);
+        }
+      }
     } else {
       // ignore: avoid_print
       print(response.statusCode);
     }
+    return recommendedMovies = RecommendedMovies.fromJson(recommendedMoviesMap);
   }
 
   getBoxOfficeMovies() async {
