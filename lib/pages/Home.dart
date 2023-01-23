@@ -617,56 +617,421 @@ class _HomeState extends State<Home> {
       updateFirstAccess();
       _isFirstAccess = false;
     }
-    return Scaffold(
-      backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            offset: Offset(0.55, 0.55),
-                            blurRadius: 7.5,
-                          ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        'assets/images/logoNoBackground.png',
-                        height: 37,
-                      ),
-                    ),
-                    const Text('CornFlix ',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black87,
-                              blurRadius: 7,
-                              offset: Offset(1.2, 1.2),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(0.55, 0.55),
+                              blurRadius: 7.5,
                             ),
                           ],
-                        )),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('We recommend',
+                        ),
+                        child: Image.asset(
+                          'assets/images/logoNoBackground.png',
+                          height: 37,
+                        ),
+                      ),
+                      const Text('CornFlix ',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black87,
+                                blurRadius: 7,
+                                offset: Offset(1.2, 1.2),
+                              ),
+                            ],
+                          )),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('We recommend',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              color: Colors.white,
+                              fontSize: 16.6,
+                              fontWeight: FontWeight.w400,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black87,
+                                  blurRadius: 7,
+                                  offset: Offset(1.2, 1.2),
+                                ),
+                              ],
+                            )),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (_isFilterChipSelected) {
+                                _isFilterChipSelected = false;
+                              } else {
+                                _isFilterChipSelected = true;
+                                getMoviesFromCountry();
+                              }
+                              _filterChipColor = _isFilterChipSelected
+                                  ? const Color.fromRGBO(36, 37, 41, 1) : const Color.fromRGBO(255, 56, 56, 1);
+                              _filterChipTextColor = _isFilterChipSelected
+                                  ? const Color.fromRGBO(176, 176, 178, 1) : const Color.fromRGBO(255, 255, 255, 1);
+                            });
+                          },
+                          child: ChipTheme(
+                            data: ChipThemeData(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                side: const BorderSide(
+                                  color: Color.fromRGBO(36, 37, 41, 1),
+                                  width: 0,
+                                ),
+                              ),
+                            ),
+                            child: Chip(
+                                backgroundColor: _filterChipColor,
+                                label: Text('Filter by your location',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      color: _filterChipTextColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ))),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _isFilterChipSelected
+                      ? FutureBuilder(
+                          future: getRecommendedMovies(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return CarouselSlider.builder(
+                                itemCount: recommendedMovies?.results?.length ?? 0,
+                                itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+                                  var movie = recommendedMovies?.results?[index];
+                                  return Dismissible(
+                                    key: Key(movie?.id.toString() ?? ''),
+                                    direction: DismissDirection.down,
+                                    onDismissed: (direction) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            '${movie?.title} dismissed',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                          dismissDirection: DismissDirection.horizontal,
+                                        ),
+                                      );
+                                      setState(() {
+                                        recommendedMovies?.results?.removeAt(index);
+                                      });
+                                      deleteFavId(movie?.id ?? 0);
+                                      addDismissedMovie(movie?.id ?? 0);
+                                      getRecommendedMovies();
+                                      HapticFeedback.mediumImpact();
+                                    },
+                                    background: Container(
+                                      color: const Color.fromRGBO(23, 25, 26, 1),
+                                      child: const Icon(
+                                        Icons.delete,
+                                        size: 190,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        InkWell(
+                                          highlightColor: const Color.fromRGBO(243, 134, 71, 1),
+                                          splashFactory: InkRipple.splashFactory,
+                                          radius: 5000,
+                                          borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
+                                          onLongPress: () {
+                                            saveFavId(recommendedMovies?.results?[index].id ?? 0);
+                                            HapticFeedback.mediumImpact();
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                              content: const Text('Added to favourites',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Inter',
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w600
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
+                                              behavior: SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                              dismissDirection: DismissDirection.horizontal,
+                                              duration: const Duration(milliseconds: 2000),
+                                            ));
+                                          },
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
+                                            },
+                                            child: Container(
+                                              width: 300,
+                                              height: 240,
+                                              margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                                              decoration: BoxDecoration(
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                    color: Colors.black45,
+                                                    offset: Offset(1.3, 1.3),
+                                                    blurRadius: 5.5,
+                                                  ),
+                                                ],
+                                                borderRadius: BorderRadius.circular(14),
+                                                image: DecorationImage(
+                                                  image: CachedNetworkImageProvider(
+                                                      'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 13, right: 13),
+                                          child: Text(
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              recommendedMovies?.results?[index].title ?? '',
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter',
+                                                color: Colors.white,
+                                                fontSize: 16.2,
+                                                fontWeight: FontWeight.w400,
+                                                shadows: [
+                                                  Shadow(
+                                                    color: Colors.black87,
+                                                    blurRadius: 7,
+                                                    offset: Offset(1.2, 1.2),
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                options: CarouselOptions(
+                                  height: 290,
+                                  viewportFraction: 0.58,
+                                  initialPage: 0,
+                                  enableInfiniteScroll: true,
+                                  reverse: false,
+                                  autoPlay: true,
+                                  autoPlayInterval: const Duration(seconds: 9),
+                                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enlargeCenterPage: true,
+                                  scrollDirection: Axis.horizontal,
+                                  enlargeFactor: 0.16,
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text("${snapshot.error}");
+                            }
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 120, bottom: 120),
+                              child: SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                              ),
+                            );
+                          })
+                      : FutureBuilder(
+                      future: getMoviesFromCountry(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return CarouselSlider.builder(
+                            itemCount: moviesFromCountryRecommended?.results?.length ?? 0,
+                            itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+                              var movie = moviesFromCountryRecommended?.results?[index];
+                              return Dismissible(
+                                key: Key(movie?.id.toString() ?? ''),
+                                direction: DismissDirection.down,
+                                onDismissed: (direction) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${movie?.title} dismissed',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                      dismissDirection: DismissDirection.horizontal,
+                                    ),
+                                  );
+                                  setState(() {
+                                    moviesFromCountryRecommended?.results?.removeAt(index);
+                                  });
+                                  deleteFavId(movie?.id ?? 0);
+                                  addDismissedMovie(movie?.id ?? 0);
+                                  getMoviesFromCountry();
+                                  HapticFeedback.mediumImpact();
+                                },
+                                background: Container(
+                                  color: const Color.fromRGBO(23, 25, 26, 1),
+                                  child: const Icon(
+                                    Icons.delete,
+                                    size: 190,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    InkWell(
+                                      highlightColor: const Color.fromRGBO(243, 134, 71, 1),
+                                      splashFactory: InkRipple.splashFactory,
+                                      radius: 5000,
+                                      borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
+                                      onLongPress: () {
+                                        saveFavId(moviesFromCountryRecommended?.results?[index].id ?? 0);
+                                        HapticFeedback.mediumImpact();
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          content: const Text('Added to favourites',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'Inter',
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w600
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+                                          dismissDirection: DismissDirection.horizontal,
+                                          duration: const Duration(milliseconds: 2000),
+                                        ));
+                                      },
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          pushToMovieDetailsPage(moviesFromCountryRecommended!.results![index].id!);
+                                        },
+                                        child: Container(
+                                          width: 300,
+                                          height: 240,
+                                          margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                                          decoration: BoxDecoration(
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Colors.black45,
+                                                offset: Offset(1.3, 1.3),
+                                                blurRadius: 5.5,
+                                              ),
+                                            ],
+                                            borderRadius: BorderRadius.circular(14),
+                                            image: DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                  'https://image.tmdb.org/t/p/w300/${moviesFromCountryRecommended?.results?[index].posterPath}'),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 13, right: 13),
+                                      child: Text(
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          moviesFromCountryRecommended?.results?[index].title ?? '',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontFamily: 'Inter',
+                                            color: Colors.white,
+                                            fontSize: 16.2,
+                                            fontWeight: FontWeight.w400,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black87,
+                                                blurRadius: 7,
+                                                offset: Offset(1.2, 1.2),
+                                              ),
+                                            ],
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            options: CarouselOptions(
+                              height: 290,
+                              viewportFraction: 0.58,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 9),
+                              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: true,
+                              scrollDirection: Axis.horizontal,
+                              enlargeFactor: 0.16,
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 120, bottom: 120),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                          ),
+                        );
+                      }),
+                  const SizedBox(height: 7),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text('Box Office',
                           style: TextStyle(
                             fontFamily: 'Inter',
                             color: Colors.white,
@@ -680,521 +1045,161 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           )),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (_isFilterChipSelected) {
-                              _isFilterChipSelected = false;
-                            } else {
-                              _isFilterChipSelected = true;
-                              getMoviesFromCountry();
-                            }
-                            _filterChipColor = _isFilterChipSelected
-                                ? const Color.fromRGBO(36, 37, 41, 1) : const Color.fromRGBO(255, 56, 56, 1);
-                            _filterChipTextColor = _isFilterChipSelected
-                                ? const Color.fromRGBO(176, 176, 178, 1) : const Color.fromRGBO(255, 255, 255, 1);
-                          });
-                        },
-                        child: ChipTheme(
-                          data: ChipThemeData(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              side: const BorderSide(
-                                color: Color.fromRGBO(36, 37, 41, 1),
-                                width: 0,
-                              ),
-                            ),
-                          ),
-                          child: Chip(
-                              backgroundColor: _filterChipColor,
-                              label: Text('Filter by your location',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    color: _filterChipTextColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ))),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                _isFilterChipSelected
-                    ? FutureBuilder(
-                        future: getRecommendedMovies(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return CarouselSlider.builder(
-                              itemCount: recommendedMovies?.results?.length ?? 0,
-                              itemBuilder: (BuildContext context, int index, int pageViewIndex) {
-                                var movie = recommendedMovies?.results?[index];
-                                return Dismissible(
-                                  key: Key(movie?.id.toString() ?? ''),
-                                  direction: DismissDirection.down,
-                                  onDismissed: (direction) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          '${movie?.title} dismissed',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                        backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
-                                        behavior: SnackBarBehavior.floating,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-                                        dismissDirection: DismissDirection.horizontal,
-                                      ),
-                                    );
-                                    setState(() {
-                                      recommendedMovies?.results?.removeAt(index);
-                                    });
-                                    deleteFavId(movie?.id ?? 0);
-                                    addDismissedMovie(movie?.id ?? 0);
-                                    getRecommendedMovies();
-                                    HapticFeedback.mediumImpact();
-                                  },
-                                  background: Container(
-                                    color: const Color.fromRGBO(23, 25, 26, 1),
-                                    child: const Icon(
-                                      Icons.delete,
-                                      size: 190,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      InkWell(
-                                        highlightColor: const Color.fromRGBO(243, 134, 71, 1),
-                                        splashFactory: InkRipple.splashFactory,
-                                        radius: 5000,
-                                        borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
-                                        onLongPress: () {
-                                          saveFavId(recommendedMovies?.results?[index].id ?? 0);
-                                          HapticFeedback.mediumImpact();
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                            content: const Text('Added to favourites',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w600
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-                                            dismissDirection: DismissDirection.horizontal,
-                                            duration: const Duration(milliseconds: 2000),
-                                          ));
-                                        },
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            pushToMovieDetailsPage(recommendedMovies!.results![index].id!);
-                                          },
-                                          child: Container(
-                                            width: 300,
-                                            height: 240,
-                                            margin: const EdgeInsets.only(left: 3.0, right: 3.0),
-                                            decoration: BoxDecoration(
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  color: Colors.black45,
-                                                  offset: Offset(1.3, 1.3),
-                                                  blurRadius: 5.5,
-                                                ),
-                                              ],
-                                              borderRadius: BorderRadius.circular(14),
-                                              image: DecorationImage(
-                                                image: CachedNetworkImageProvider(
-                                                    'https://image.tmdb.org/t/p/w300/${recommendedMovies?.results?[index].posterPath}'),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 13, right: 13),
-                                        child: Text(
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            recommendedMovies?.results?[index].title ?? '',
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                              fontFamily: 'Inter',
-                                              color: Colors.white,
-                                              fontSize: 16.2,
-                                              fontWeight: FontWeight.w400,
-                                              shadows: [
-                                                Shadow(
-                                                  color: Colors.black87,
-                                                  blurRadius: 7,
-                                                  offset: Offset(1.2, 1.2),
-                                                ),
-                                              ],
-                                            )),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              options: CarouselOptions(
-                                height: 290,
-                                viewportFraction: 0.58,
-                                initialPage: 0,
-                                enableInfiniteScroll: true,
-                                reverse: false,
-                                autoPlay: true,
-                                autoPlayInterval: const Duration(seconds: 9),
-                                autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                enlargeCenterPage: true,
-                                scrollDirection: Axis.horizontal,
-                                enlargeFactor: 0.16,
-                              ),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-                          return const Padding(
-                            padding: EdgeInsets.only(top: 120, bottom: 120),
-                            child: SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
-                            ),
-                          );
-                        })
-                    : FutureBuilder(
-                    future: getMoviesFromCountry(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return CarouselSlider.builder(
-                          itemCount: moviesFromCountryRecommended?.results?.length ?? 0,
-                          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
-                            var movie = moviesFromCountryRecommended?.results?[index];
-                            return Dismissible(
-                              key: Key(movie?.id.toString() ?? ''),
-                              direction: DismissDirection.down,
-                              onDismissed: (direction) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      '${movie?.title} dismissed',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    backgroundColor: const Color.fromRGBO(255, 56, 56, 1),
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-                                    dismissDirection: DismissDirection.horizontal,
-                                  ),
-                                );
-                                setState(() {
-                                  moviesFromCountryRecommended?.results?.removeAt(index);
-                                });
-                                deleteFavId(movie?.id ?? 0);
-                                addDismissedMovie(movie?.id ?? 0);
-                                getMoviesFromCountry();
-                                HapticFeedback.mediumImpact();
-                              },
-                              background: Container(
-                                color: const Color.fromRGBO(23, 25, 26, 1),
-                                child: const Icon(
-                                  Icons.delete,
-                                  size: 190,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              child: Column(
+                  FutureBuilder(
+                      future: getBoxOfficeMovies(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return CarouselSlider.builder(
+                            itemCount: boxOfficeMovies?.results?.length ?? 0,
+                            itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+                              return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  InkWell(
-                                    highlightColor: const Color.fromRGBO(243, 134, 71, 1),
-                                    splashFactory: InkRipple.splashFactory,
-                                    radius: 5000,
-                                    borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
-                                    onLongPress: () {
-                                      saveFavId(moviesFromCountryRecommended?.results?[index].id ?? 0);
-                                      HapticFeedback.mediumImpact();
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                        content: const Text('Added to favourites',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Inter',
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w600
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        backgroundColor: const Color.fromRGBO(243, 134, 71, 1),
-                                        behavior: SnackBarBehavior.floating,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-                                        dismissDirection: DismissDirection.horizontal,
-                                        duration: const Duration(milliseconds: 2000),
-                                      ));
+                                  GestureDetector(
+                                    onTap: () {
+                                      pushToMovieDetailsPage(boxOfficeMovies!.results![index].id!);
                                     },
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        pushToMovieDetailsPage(moviesFromCountryRecommended!.results![index].id!);
-                                      },
-                                      child: Container(
-                                        width: 300,
-                                        height: 240,
-                                        margin: const EdgeInsets.only(left: 3.0, right: 3.0),
-                                        decoration: BoxDecoration(
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.black45,
-                                              offset: Offset(1.3, 1.3),
-                                              blurRadius: 5.5,
-                                            ),
-                                          ],
-                                          borderRadius: BorderRadius.circular(14),
-                                          image: DecorationImage(
-                                            image: CachedNetworkImageProvider(
-                                                'https://image.tmdb.org/t/p/w300/${moviesFromCountryRecommended?.results?[index].posterPath}'),
-                                            fit: BoxFit.cover,
+                                    child: Container(
+                                      width: 300,
+                                      height: 120,
+                                      margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                      decoration: BoxDecoration(
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black45,
+                                            offset: Offset(1.3, 1.3),
+                                            blurRadius: 5.5,
                                           ),
+                                        ],
+                                        borderRadius: BorderRadius.circular(14),
+                                        image: DecorationImage(
+                                          image: CachedNetworkImageProvider(
+                                              'https://image.tmdb.org/t/p/w300/${boxOfficeMovies?.results?[index].posterPath}'),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 13, right: 13),
-                                    child: Text(
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        moviesFromCountryRecommended?.results?[index].title ?? '',
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontFamily: 'Inter',
-                                          color: Colors.white,
-                                          fontSize: 16.2,
-                                          fontWeight: FontWeight.w400,
-                                          shadows: [
-                                            Shadow(
-                                              color: Colors.black87,
-                                              blurRadius: 7,
-                                              offset: Offset(1.2, 1.2),
-                                            ),
-                                          ],
-                                        )),
                                   ),
                                 ],
+                              );
+                            },
+                            options: CarouselOptions(
+                              height: 150.0,
+                              aspectRatio: 9 / 9,
+                              viewportFraction: 0.33,
+                              initialPage: 3,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 6),
+                              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              scrollDirection: Axis.horizontal,
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 62, bottom: 62),
+                          child: SizedBox(
+                            width: 26,
+                            height: 26,
+                            child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
+                          ),
+                        );
+                      }),
+                  const SizedBox(height: 15),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text('Upcoming',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Colors.white,
+                            fontSize: 16.6,
+                            fontWeight: FontWeight.w400,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black87,
+                                blurRadius: 7,
+                                offset: Offset(1.2, 1.2),
                               ),
-                            );
-                          },
-                          options: CarouselOptions(
-                            height: 290,
-                            viewportFraction: 0.58,
-                            initialPage: 0,
-                            enableInfiniteScroll: true,
-                            reverse: false,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 9),
-                            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            enlargeCenterPage: true,
-                            scrollDirection: Axis.horizontal,
-                            enlargeFactor: 0.16,
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 120, bottom: 120),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
-                        ),
-                      );
-                    }),
-                const SizedBox(height: 7),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text('Box Office',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: Colors.white,
-                          fontSize: 16.6,
-                          fontWeight: FontWeight.w400,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black87,
-                              blurRadius: 7,
-                              offset: Offset(1.2, 1.2),
-                            ),
-                          ],
-                        )),
+                            ],
+                          )),
+                    ),
                   ),
-                ),
-                FutureBuilder(
-                    future: getBoxOfficeMovies(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return CarouselSlider.builder(
-                          itemCount: boxOfficeMovies?.results?.length ?? 0,
-                          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    pushToMovieDetailsPage(boxOfficeMovies!.results![index].id!);
-                                  },
-                                  child: Container(
-                                    width: 300,
-                                    height: 120,
-                                    margin: const EdgeInsets.only(left: 5.0, right: 5.0),
-                                    decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black45,
-                                          offset: Offset(1.3, 1.3),
-                                          blurRadius: 5.5,
+                  FutureBuilder(
+                      future: getUpcomingMovies(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return CarouselSlider.builder(
+                            itemCount: upcomingMovies?.results?.length ?? 0,
+                            itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      pushToMovieDetailsPage(upcomingMovies!.results![index].id!);
+                                    },
+                                    child: Container(
+                                      width: 300,
+                                      height: 120,
+                                      margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                      decoration: BoxDecoration(
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black45,
+                                            offset: Offset(1.3, 1.3),
+                                            blurRadius: 5.5,
+                                          ),
+                                        ],
+                                        borderRadius: BorderRadius.circular(14),
+                                        image: DecorationImage(
+                                          image: CachedNetworkImageProvider(
+                                              'https://image.tmdb.org/t/p/w300/${upcomingMovies?.results?[index].posterPath}'),
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.none,
                                         ),
-                                      ],
-                                      borderRadius: BorderRadius.circular(14),
-                                      image: DecorationImage(
-                                        image: CachedNetworkImageProvider(
-                                            'https://image.tmdb.org/t/p/w300/${boxOfficeMovies?.results?[index].posterPath}'),
-                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          },
-                          options: CarouselOptions(
-                            height: 150.0,
-                            aspectRatio: 9 / 9,
-                            viewportFraction: 0.33,
-                            initialPage: 3,
-                            enableInfiniteScroll: true,
-                            reverse: false,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 6),
-                            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            scrollDirection: Axis.horizontal,
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 75, bottom: 75),
-                        child: SizedBox(
-                          width: 26,
-                          height: 26,
-                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
-                        ),
-                      );
-                    }),
-                const SizedBox(height: 15),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text('Upcoming',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: Colors.white,
-                          fontSize: 16.6,
-                          fontWeight: FontWeight.w400,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black87,
-                              blurRadius: 7,
-                              offset: Offset(1.2, 1.2),
+                                ],
+                              );
+                            },
+                            options: CarouselOptions(
+                              height: 150.0,
+                              aspectRatio: 9 / 9,
+                              viewportFraction: 0.33,
+                              initialPage: 3,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 7),
+                              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              scrollDirection: Axis.horizontal,
                             ),
-                          ],
-                        )),
-                  ),
-                ),
-                FutureBuilder(
-                    future: getUpcomingMovies(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return CarouselSlider.builder(
-                          itemCount: upcomingMovies?.results?.length ?? 0,
-                          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    pushToMovieDetailsPage(upcomingMovies!.results![index].id!);
-                                  },
-                                  child: Container(
-                                    width: 300,
-                                    height: 120,
-                                    margin: const EdgeInsets.only(left: 5.0, right: 5.0),
-                                    decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black45,
-                                          offset: Offset(1.3, 1.3),
-                                          blurRadius: 5.5,
-                                        ),
-                                      ],
-                                      borderRadius: BorderRadius.circular(14),
-                                      image: DecorationImage(
-                                        image: CachedNetworkImageProvider(
-                                            'https://image.tmdb.org/t/p/w300/${upcomingMovies?.results?[index].posterPath}'),
-                                        fit: BoxFit.cover,
-                                        filterQuality: FilterQuality.none,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                          options: CarouselOptions(
-                            height: 150.0,
-                            aspectRatio: 9 / 9,
-                            viewportFraction: 0.33,
-                            initialPage: 3,
-                            enableInfiniteScroll: true,
-                            reverse: false,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 7),
-                            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            scrollDirection: Axis.horizontal,
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 62, bottom: 62),
+                          child: SizedBox(
+                            width: 26,
+                            height: 26,
+                            child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
                           ),
                         );
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 75, bottom: 75),
-                        child: SizedBox(
-                          width: 26,
-                          height: 26,
-                          child: CircularProgressIndicator(color: Color.fromRGBO(255, 56, 56, 1)),
-                        ),
-                      );
-                    }),
-                const SizedBox(height: 25),
-              ],
+                      }),
+                  const SizedBox(height: 25),
+                ],
+              ),
             ),
           ),
         ),

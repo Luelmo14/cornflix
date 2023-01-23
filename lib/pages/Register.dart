@@ -88,345 +88,123 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
-        body: SafeArea(
-          child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 40),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: widget.showLoginPage,
-                            child: Image.asset(
-                              'assets/images/backArrow.png',
-                              height: 30,
-                              width: 30,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black38,
-                            offset: Offset(0, 0),
-                            blurRadius: 19,
-                          ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        height: 83,
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                            'Register to ',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black87,
-                                  blurRadius: 7,
-                                  offset: Offset(1.2, 1.2),
-                                ),
-                              ],
-                            )
-                        ),
-                        Text(
-                            'CornFlix',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              color: Color.fromRGBO(255, 56, 56, 1),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black45,
-                                  blurRadius: 7,
-                                  offset: Offset(1.2, 1.2),
-                                ),
-                              ],
-                            )
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    const Text(
-                        'Movie info at your fingertips!',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: Color.fromRGBO(202, 202, 202, 1),
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w500,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black26,
-                              blurRadius: 5,
-                              offset: Offset(0.8, 0.8),
+    return WillPopScope(
+      onWillPop: () async {
+        widget.showLoginPage();
+        return false;
+      },
+      child: Scaffold(
+          backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
+          body: SafeArea(
+            child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: widget.showLoginPage,
+                              child: Image.asset(
+                                'assets/images/backArrow.png',
+                                height: 30,
+                                width: 30,
+                              ),
                             ),
                           ],
-                        )
-                    ),
-
-                    const SizedBox(height: 35),
-
-                    Text(
-                      errorMessage!,
-                      style: const TextStyle(
-                          color: Colors.red,
-                          fontFamily: 'Inter'),
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                offset: Offset(1, 1.3),
-                                blurRadius: 6,
-                              ),
-                            ],
-                            color: const Color.fromRGBO(36, 37, 41, 1),
-                            borderRadius: BorderRadius.circular(14)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
-                              keyboardType: TextInputType.name,
-                              controller: nameController,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Inter',
-                              ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Name',
-                                hintStyle: TextStyle(
-                                  color: Color.fromRGBO(202, 202, 202, 1),
-                                  fontFamily: 'Inter',
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                )
-                              )
-                          ),
                         ),
                       ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                offset: Offset(1, 1.3),
-                                blurRadius: 6,
-                              ),
-                            ],
-                            color: const Color.fromRGBO(36, 37, 41, 1),
-                            borderRadius: BorderRadius.circular(14)
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black38,
+                              offset: Offset(0, 0),
+                              blurRadius: 19,
+                            ),
+                          ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
-                              keyboardType: TextInputType.name,
-                              controller: surnameController,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Inter',
-                              ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Surname',
-                                  hintStyle: TextStyle(
-                                    color: Color.fromRGBO(202, 202, 202, 1),
-                                    fontFamily: 'Inter',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                  )
-                              )
-                          ),
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          height: 83,
                         ),
                       ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                offset: Offset(1, 1.3),
-                                blurRadius: 6,
-                              ),
-                            ],
-                            color: const Color.fromRGBO(36, 37, 41, 1),
-                            borderRadius: BorderRadius.circular(14)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
-                              keyboardType: TextInputType.emailAddress,
-                              controller: emailController,
-                              style: const TextStyle(
-                                color: Colors.white,
+                      const SizedBox(height: 18),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                              'Register to ',
+                              style: TextStyle(
                                 fontFamily: 'Inter',
-                              ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Email',
-                                  hintStyle: TextStyle(
-                                    color: Color.fromRGBO(202, 202, 202, 1),
-                                    fontFamily: 'Inter',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                  )
-                              )
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                offset: Offset(1, 1.3),
-                                blurRadius: 6,
-                              ),
-                            ],
-                            color: const Color.fromRGBO(36, 37, 41, 1),
-                            borderRadius: BorderRadius.circular(14)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
-                              obscureText: hidePassword,
-                              controller: passwordController,
-                              style: const TextStyle(
                                 color: Colors.white,
-                                fontFamily: 'Inter',
-                              ),
-                              decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          hidePassword = !hidePassword;
-                                        });
-                                      },
-                                      icon: const Icon(
-                                        Icons.remove_red_eye_outlined,
-                                        color: Color.fromRGBO(202, 202, 202, 1),
-                                        size: 21,
-                                      )
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black87,
+                                    blurRadius: 7,
+                                    offset: Offset(1.2, 1.2),
                                   ),
-                                border: InputBorder.none,
-                                hintText: 'Password',
-                                  hintStyle: const TextStyle(
-                                    color: Color.fromRGBO(202, 202, 202, 1),
-                                    fontFamily: 'Inter',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                  )
+                                ],
                               )
                           ),
-                        ),
+                          Text(
+                              'CornFlix',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                color: Color.fromRGBO(255, 56, 56, 1),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black45,
+                                    blurRadius: 7,
+                                    offset: Offset(1.2, 1.2),
+                                  ),
+                                ],
+                              )
+                          ),
+                        ],
                       ),
-                    ),
 
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
+                      const Text(
+                          'Movie info at your fingertips!',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            color: Color.fromRGBO(202, 202, 202, 1),
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w500,
+                            shadows: [
+                              Shadow(
                                 color: Colors.black26,
-                                offset: Offset(1, 1.3),
-                                blurRadius: 6,
+                                blurRadius: 5,
+                                offset: Offset(0.8, 0.8),
                               ),
                             ],
-                            color: const Color.fromRGBO(36, 37, 41, 1),
-                            borderRadius: BorderRadius.circular(14)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: TextField(
-                              obscureText: hideConfirmPassword,
-                              controller: confirmPasswordController,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Inter',
-                              ),
-                              decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          hideConfirmPassword = !hideConfirmPassword;
-                                        });
-                                      },
-                                      icon: const Icon(
-                                        Icons.remove_red_eye_outlined,
-                                        color: Color.fromRGBO(202, 202, 202, 1),
-                                        size: 21,
-                                      )
-                                  ),
-                                border: InputBorder.none,
-                                hintText: 'Confirm Password',
-                                  hintStyle: const TextStyle(
-                                    color: Color.fromRGBO(202, 202, 202, 1),
-                                    fontFamily: 'Inter',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                  )
-                              )
-                          ),
-                        ),
+                          )
                       ),
-                    ),
 
-                    const SizedBox(height: 25),
+                      const SizedBox(height: 35),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: GestureDetector(
-                        onTap: createUserWithEmailAndPassword,
+                      Text(
+                        errorMessage!,
+                        style: const TextStyle(
+                            color: Colors.red,
+                            fontFamily: 'Inter'),
+                      ),
+
+                      const SizedBox(height: 15),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: Container(
-                          padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(
                               boxShadow: const [
                                 BoxShadow(
@@ -435,75 +213,303 @@ class _RegisterState extends State<Register> {
                                   blurRadius: 6,
                                 ),
                               ],
-                              color: const Color.fromRGBO(255, 56, 56, 1),
+                              color: const Color.fromRGBO(36, 37, 41, 1),
                               borderRadius: BorderRadius.circular(14)
                           ),
-                          child: const Center(
-                              child: Text(
-                                'Register',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Inter',
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black12,
-                                      blurRadius: 5,
-                                      offset: Offset(0.5, 0.5),
-                                    ),
-                                  ],
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextField(
+                                keyboardType: TextInputType.name,
+                                controller: nameController,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Inter',
                                 ),
-                              )
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Name',
+                                  hintStyle: TextStyle(
+                                    color: Color.fromRGBO(202, 202, 202, 1),
+                                    fontFamily: 'Inter',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                  )
+                                )
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    const SizedBox(height: 45),
+                      const SizedBox(height: 10),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Already a member? ',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(202, 202, 202, 1),
-                            shadows: [
-                              Shadow(
-                                color: Colors.black38,
-                                blurRadius: 5,
-                                offset: Offset(0.8, 0.8),
-                              ),
-                            ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  offset: Offset(1, 1.3),
+                                  blurRadius: 6,
+                                ),
+                              ],
+                              color: const Color.fromRGBO(36, 37, 41, 1),
+                              borderRadius: BorderRadius.circular(14)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextField(
+                                keyboardType: TextInputType.name,
+                                controller: surnameController,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Inter',
+                                ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Surname',
+                                    hintStyle: TextStyle(
+                                      color: Color.fromRGBO(202, 202, 202, 1),
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    )
+                                )
+                            ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: widget.showLoginPage,
-                          child: const Text(
-                            'Sign In',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  offset: Offset(1, 1.3),
+                                  blurRadius: 6,
+                                ),
+                              ],
+                              color: const Color.fromRGBO(36, 37, 41, 1),
+                              borderRadius: BorderRadius.circular(14)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextField(
+                                keyboardType: TextInputType.emailAddress,
+                                controller: emailController,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Inter',
+                                ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Email',
+                                    hintStyle: TextStyle(
+                                      color: Color.fromRGBO(202, 202, 202, 1),
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    )
+                                )
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  offset: Offset(1, 1.3),
+                                  blurRadius: 6,
+                                ),
+                              ],
+                              color: const Color.fromRGBO(36, 37, 41, 1),
+                              borderRadius: BorderRadius.circular(14)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextField(
+                                obscureText: hidePassword,
+                                controller: passwordController,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Inter',
+                                ),
+                                decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            hidePassword = !hidePassword;
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.remove_red_eye_outlined,
+                                          color: Color.fromRGBO(202, 202, 202, 1),
+                                          size: 21,
+                                        )
+                                    ),
+                                  border: InputBorder.none,
+                                  hintText: 'Password',
+                                    hintStyle: const TextStyle(
+                                      color: Color.fromRGBO(202, 202, 202, 1),
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    )
+                                )
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  offset: Offset(1, 1.3),
+                                  blurRadius: 6,
+                                ),
+                              ],
+                              color: const Color.fromRGBO(36, 37, 41, 1),
+                              borderRadius: BorderRadius.circular(14)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0),
+                            child: TextField(
+                                obscureText: hideConfirmPassword,
+                                controller: confirmPasswordController,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Inter',
+                                ),
+                                decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            hideConfirmPassword = !hideConfirmPassword;
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.remove_red_eye_outlined,
+                                          color: Color.fromRGBO(202, 202, 202, 1),
+                                          size: 21,
+                                        )
+                                    ),
+                                  border: InputBorder.none,
+                                  hintText: 'Confirm Password',
+                                    hintStyle: const TextStyle(
+                                      color: Color.fromRGBO(202, 202, 202, 1),
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    )
+                                )
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: GestureDetector(
+                          onTap: createUserWithEmailAndPassword,
+                          child: Container(
+                            padding: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    offset: Offset(1, 1.3),
+                                    blurRadius: 6,
+                                  ),
+                                ],
+                                color: const Color.fromRGBO(255, 56, 56, 1),
+                                borderRadius: BorderRadius.circular(14)
+                            ),
+                            child: const Center(
+                                child: Text(
+                                  'Register',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Inter',
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black12,
+                                        blurRadius: 5,
+                                        offset: Offset(0.5, 0.5),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 45),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Already a member? ',
                             style: TextStyle(
-                                color: Color.fromRGBO(255, 56, 56, 1),
-                                fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromRGBO(202, 202, 202, 1),
                               shadows: [
                                 Shadow(
-                                  color: Colors.black26,
+                                  color: Colors.black38,
                                   blurRadius: 5,
                                   offset: Offset(0.8, 0.8),
                                 ),
                               ],
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 75),
-                  ],
-                ),
-              )
-          ),
-        )
+                          GestureDetector(
+                            onTap: widget.showLoginPage,
+                            child: const Text(
+                              'Sign In',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(255, 56, 56, 1),
+                                  fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5,
+                                    offset: Offset(0.8, 0.8),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 75),
+                    ],
+                  ),
+                )
+            ),
+          )
+      ),
     );
   }
 }
