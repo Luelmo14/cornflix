@@ -49,19 +49,19 @@ class _NavBarState extends State<NavBar> {
           selectedLabelStyle: const TextStyle(fontSize: 13.2, fontFamily: 'Inter'),
           items: const [
             BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 5),
-                child: ImageIcon(
-                  AssetImage('assets/images/whiteHome.png'),
+                icon: Padding(
+                  padding: EdgeInsets.only(bottom: 5),
+                  child: ImageIcon(
+                    AssetImage('assets/images/whiteHome.png'),
+                  ),
                 ),
-              ),
-              activeIcon: Padding(
-                padding: EdgeInsets.only(bottom: 5),
-                child: ImageIcon(
-                  AssetImage('assets/images/orangeHome.png'),
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(bottom: 5),
+                  child: ImageIcon(
+                    AssetImage('assets/images/orangeHome.png'),
+                  ),
                 ),
-              ),
-              label: 'Home'
+                label: 'Home'
             ),
             BottomNavigationBarItem(
                 icon: Padding(
