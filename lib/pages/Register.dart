@@ -64,6 +64,7 @@ class _RegisterState extends State<Register> {
       'fav_movies': [],
       'dismissed_movies': [],
       'is_first_time': true,
+      'is_first_favorites_time': true,
     });
   }
 

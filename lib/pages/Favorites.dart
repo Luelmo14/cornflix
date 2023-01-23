@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,10 +20,12 @@ class _FavoritesState extends State<Favorites> {
   List<Map<String, dynamic>> favoriteMovies = [];
   Future<List<Map<String, dynamic>>> _movieDetailsFuture = Future.value([]);
   final favoritesNavigatorKey = GlobalKey<NavigatorState>();
+  bool _isFirstAccess = false;
 
   @override
   initState() {
     super.initState();
+    _checkFirstAccess();
     fetchUserFavMoviesIds();
     _movieDetailsFuture = fetchMovieDetails();
   }
@@ -74,8 +77,114 @@ class _FavoritesState extends State<Favorites> {
     );
   }
 
+  _checkFirstAccess() {
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).get().then((value) {
+      if (value.data()!['is_first_favorites_time']) {
+        setState(() {
+          _isFirstAccess = true;
+        });
+      } else {
+        setState(() {
+          _isFirstAccess = false;
+        });
+      }
+    });
+  }
+
+  updateFirstAccess() {
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+      'is_first_favorites_time': false
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_isFirstAccess && favoriteMovieIds.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Flushbar(
+          backgroundGradient: const LinearGradient(
+            colors: [
+              Color.fromRGBO(243, 134, 71, 22),
+              Color.fromRGBO(243, 104, 71, 22),
+              Color.fromRGBO(243, 134, 71, 22)],
+          ),
+          barBlur: 2.4,
+          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 70),
+          borderRadius: BorderRadius.circular(15),
+          flushbarPosition: FlushbarPosition.BOTTOM,
+          titleText: const Text(
+            'Your favorite movies!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  blurRadius: 12,
+                  offset: Offset(0.5, 0.5),
+                ),
+              ],
+            ),
+          ),
+          messageText: const Text(
+            'Swipe horizontally to delete a movie from your favorites list.',
+            style: TextStyle(
+              color: Color.fromRGBO(255, 255, 255, 20),
+              fontSize: 13.5,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  blurRadius: 6,
+                  offset: Offset(0.6, 0.6),
+                ),
+              ],
+            ),
+          ),
+          icon: const Icon(
+            Icons.favorite,
+            size: 23,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                color: Colors.black26,
+                blurRadius: 6,
+                offset: Offset(0.6, 0.6),
+              ),
+            ],
+          ),
+          isDismissible: false,
+          shouldIconPulse: true,
+          mainButton: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+
+            },
+            child: const Text(
+              'Got it!',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Inter',
+                fontSize: 14.6,
+                shadows: [
+                  Shadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0.8, 0.8),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ).show(context);
+      });
+      updateFirstAccess();
+      _isFirstAccess = false;
+    }
     return Scaffold(
       backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
       body: SafeArea(
