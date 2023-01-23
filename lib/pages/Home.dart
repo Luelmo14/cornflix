@@ -863,7 +863,7 @@ class _HomeState extends State<Home> {
                             return Text("${snapshot.error}");
                           }
                           return const Padding(
-                            padding: EdgeInsets.only(top: 155, bottom: 155),
+                            padding: EdgeInsets.only(top: 120, bottom: 120),
                             child: SizedBox(
                               width: 50,
                               height: 50,
@@ -1014,7 +1014,7 @@ class _HomeState extends State<Home> {
                         return Text("${snapshot.error}");
                       }
                       return const Padding(
-                        padding: EdgeInsets.only(top: 155, bottom: 155),
+                        padding: EdgeInsets.only(top: 120, bottom: 120),
                         child: SizedBox(
                           width: 50,
                           height: 50,

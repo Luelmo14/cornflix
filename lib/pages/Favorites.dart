@@ -146,6 +146,37 @@ class _FavoritesState extends State<Favorites> {
                 future: _movieDetailsFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    if (favoriteMovies.isEmpty) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          SizedBox(height: 100),
+                          Text(
+                              'No favorites? No problem!',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                color: Color.fromRGBO(150, 150, 150, 1),
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                                height: 1.5,
+                              )
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            'Start exploring and add some to your list.',
+                            overflow: TextOverflow.clip,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color.fromRGBO(150, 150, 150, 1),
+                              fontSize: 17,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      );
+                    }
                     favoriteMovies = snapshot.data!;
                     return ListView.builder(
                       shrinkWrap: true,
@@ -263,36 +294,6 @@ class _FavoritesState extends State<Favorites> {
                           ),
                         );
                       },
-                    );
-                  } else if (snapshot.hasError) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        SizedBox(height: 100),
-                        Text(
-                            'No favorites? No problem!',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            color: Color.fromRGBO(150, 150, 150, 1),
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            height: 1.5,
-                          )
-                        ),
-                        SizedBox(height: 3),
-                        Text(
-                          'Start exploring and add some to your list.',
-                          overflow: TextOverflow.clip,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color.fromRGBO(150, 150, 150, 1),
-                            fontSize: 17,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
                     );
                   }
                   return const Padding(

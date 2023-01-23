@@ -442,11 +442,11 @@ class _MovieDetailsState extends State<MovieDetails> {
                                  ),
                                ],
                              ),
-                              const SizedBox(height: 5),
+                              const SizedBox(height: 3),
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 15),
+                                  padding: const EdgeInsets.only(left: 15, right: 15),
                                   child: Text(
                                     'Country: ${movieDetailsData!.productionCountries!.map((e) => e.name == 'United States of America' ? 'USA' : e.name).toList().join(', ')}',
                                     style: const TextStyle(
@@ -458,11 +458,11 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 ),
                               ),
-                             const SizedBox(height: 5),
+                             const SizedBox(height: 3),
                              Align(
                                alignment: Alignment.centerLeft,
                                child: Padding(
-                                 padding: const EdgeInsets.only(left: 15),
+                                 padding: const EdgeInsets.only(left: 15, right: 15),
                                  child: Text(
                                    'Original title: ${movieDetailsData!.originalTitle}',
                                    style: const TextStyle(
