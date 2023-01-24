@@ -107,7 +107,6 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // return to home page using navbar
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(

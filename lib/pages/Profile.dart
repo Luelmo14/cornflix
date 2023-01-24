@@ -121,7 +121,6 @@ class _ProfileState extends State<Profile> {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .delete();
     }
-    // pop navigation
     Navigator.pop(context);
     setState(() {});
   }
@@ -152,7 +151,6 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // return to home page using navbar
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(

@@ -775,7 +775,7 @@ class _HomeState extends State<Home> {
                                           highlightColor: const Color.fromRGBO(243, 134, 71, 1),
                                           splashFactory: InkRipple.splashFactory,
                                           radius: 5000,
-                                          borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
+                                          borderRadius: BorderRadius.circular(30),
                                           onLongPress: () {
                                             saveFavId(recommendedMovies?.results?[index].id ?? 0);
                                             HapticFeedback.mediumImpact();
@@ -926,7 +926,7 @@ class _HomeState extends State<Home> {
                                       highlightColor: const Color.fromRGBO(243, 134, 71, 1),
                                       splashFactory: InkRipple.splashFactory,
                                       radius: 5000,
-                                      borderRadius: BorderRadius.circular(30), // Customize the border radius of the animation
+                                      borderRadius: BorderRadius.circular(30),
                                       onLongPress: () {
                                         saveFavId(moviesFromCountryRecommended?.results?[index].id ?? 0);
                                         HapticFeedback.mediumImpact();

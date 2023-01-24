@@ -849,7 +849,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: trailerVideosData!.results!.length,
-                                  padding: const EdgeInsets.only(right: 15),
+                                  padding: const EdgeInsets.only(right: 2.5, left: 2.5),
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.only(left: 15, right: 15),
@@ -867,6 +867,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                                   ),
                                                 ),
                                                 onReady: () {
+                                                  // ignore: avoid_print
                                                   print('Player is ready.');
                                                 },
                                                 bottomActions: [
@@ -1016,7 +1017,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: clipsVideosData!.results!.length,
-                                  padding: const EdgeInsets.only(right: 15),
+                                  padding: const EdgeInsets.only(right: 2.5, left: 2.5),
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.only(left: 15, right: 15),
@@ -1034,6 +1035,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                                   ),
                                                 ),
                                                 onReady: () {
+                                                  // ignore: avoid_print
                                                   print('Player is ready.');
                                                 },
                                                 bottomActions: [

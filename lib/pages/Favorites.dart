@@ -52,7 +52,6 @@ class _FavoritesState extends State<Favorites> {
       var response = await client.get(url);
       if (response.statusCode == 200) {
         var movieData = jsonDecode(response.body);
-        //favoriteMovies.clear();
         favoriteMovies.add(movieData);
       } else {
         // ignore: avoid_print
@@ -188,7 +187,6 @@ class _FavoritesState extends State<Favorites> {
     }
     return WillPopScope(
       onWillPop: () async {
-        // return to home page using navbar
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
@@ -270,8 +268,6 @@ class _FavoritesState extends State<Favorites> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                // check if there are any favorite movies
-
                 FutureBuilder(
                   future: _movieDetailsFuture,
                   builder: (context, snapshot) {
@@ -402,7 +398,6 @@ class _FavoritesState extends State<Favorites> {
                                               ),
                                               const SizedBox(height: 5),
                                               Text(
-                                                // release date and if empty 'no release date'
                                                 movie['release_date'] != ''
                                                     ? movie['release_date']
                                                     : 'No release date',
