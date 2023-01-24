@@ -89,7 +89,7 @@ class _ProfileState extends State<Profile> {
     setState(() {});
   }
 
-  deleteUser() {
+  deleteUser() async {
     final firebaseUser = FirebaseAuth.instance.currentUser;
     if (firebaseUser != null) {
       firebaseUser
@@ -121,7 +121,8 @@ class _ProfileState extends State<Profile> {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .delete();
     }
-    Navigator.pop(context);
+    await Auth().deleteUser();
+    Navigator.of(context).popUntil((route) => route.isFirst);
     setState(() {});
   }
 
@@ -137,7 +138,6 @@ class _ProfileState extends State<Profile> {
       });
     }
   }
-
 
   @override
   void dispose() {
