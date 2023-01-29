@@ -236,6 +236,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                               top: 35,
                               left: 25,
                               child: FloatingActionButton(
+                                heroTag: 'backFromDetails',
                                 backgroundColor: Colors.transparent,
                                 elevation: 0,
                                 onPressed: () {
@@ -359,6 +360,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                      child: Padding(
                                        padding: const EdgeInsets.only(right: 7),
                                        child: FloatingActionButton(
+                                          heroTag: 'favFromDetails',
                                          onPressed: () async {
                                            await _toggleLike();
                                            if (_isLiked) {
@@ -573,57 +575,52 @@ class _MovieDetailsState extends State<MovieDetails> {
                               ),
                             ),
                             const SizedBox(height: 15),
-                            ListView(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                SizedBox(
-                                  height: 120,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: topCastData!.cast!.length,
-                                    padding: const EdgeInsets.only(right: 15),
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(left: 15),
-                                        child: SizedBox(
-                                          width: 70,
-                                          child: Column(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(30),
-                                                child: Image.network(
-                                                  'https://image.tmdb.org/t/p/w500${topCastData!.cast![index].profilePath}',
-                                                  height: 70,
-                                                  width: 70,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              SizedBox(
-                                                width: 70,
-                                                child: Text(
-                                                  topCastData!.cast![index].name ?? '',
-                                                  maxLines: 2,
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                      fontFamily: 'Inter'
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
+                            SizedBox(
+                              height: 120,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: topCastData!.cast!.length,
+                                padding: const EdgeInsets.only(right: 15),
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: SizedBox(
+                                      width: 70,
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(30),
+                                            child: Image.network(
+                                              'https://image.tmdb.org/t/p/w500${topCastData!.cast![index].profilePath}',
+                                              height: 70,
+                                              width: 70,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                                          const SizedBox(height: 5),
+                                          SizedBox(
+                                            width: 70,
+                                            child: Text(
+                                              topCastData!.cast![index].name ?? '',
+                                              maxLines: 2,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                  fontFamily: 'Inter'
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ],
                         );
@@ -705,61 +702,56 @@ class _MovieDetailsState extends State<MovieDetails> {
                                 ),
                               ),
                               const SizedBox(height: 15),
-                              ListView(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                children: [
-                                  SizedBox(
-                                    height: 200,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: similarMovies!.results!.length,
-                                      padding: const EdgeInsets.only(right: 15),
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(left: 15),
-                                          child: SizedBox(
-                                            width: 90,
-                                            child: Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    pushToMovieDetailsPage(similarMovies!.results![index].id ?? 0);
-                                                  },
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    child: Image.network(
-                                                      'https://image.tmdb.org/t/p/w500${similarMovies!.results![index].posterPath}',
-                                                      height: 130,
-                                                      width: 90,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
+                              SizedBox(
+                                height: 200,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: similarMovies!.results!.length,
+                                  padding: const EdgeInsets.only(right: 15),
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 15),
+                                      child: SizedBox(
+                                        width: 90,
+                                        child: Column(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                pushToMovieDetailsPage(similarMovies!.results![index].id ?? 0);
+                                              },
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child: Image.network(
+                                                  'https://image.tmdb.org/t/p/w500${similarMovies!.results![index].posterPath}',
+                                                  height: 130,
+                                                  width: 90,
+                                                  fit: BoxFit.cover,
                                                 ),
-                                                const SizedBox(height: 5),
-                                                SizedBox(
-                                                  width: 70,
-                                                  child: Text(
-                                                    similarMovies!.results![index].title ?? '',
-                                                    maxLines: 4,
-                                                    style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w400,
-                                                        fontFamily: 'Inter'
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
+                                            const SizedBox(height: 5),
+                                            SizedBox(
+                                              width: 70,
+                                              child: Text(
+                                                similarMovies!.results![index].title ?? '',
+                                                maxLines: 4,
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontFamily: 'Inter'
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ],
                           );
