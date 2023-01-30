@@ -49,8 +49,9 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> signOut() async {
+    final navigator = Navigator.of(context);
     await Auth().signOut();
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    navigator.popUntil((route) => route.isFirst);
   }
 
   _updateName() {
@@ -91,10 +92,16 @@ class _ProfileState extends State<Profile> {
 
   deleteUser() async {
     final firebaseUser = FirebaseAuth.instance.currentUser;
+    final navigator = Navigator.of(context);
     if (firebaseUser != null) {
       firebaseUser
           .delete()
-          .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+          .then((value) {
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(firebaseUser.uid)
+                .delete();
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: const Text('Account deleted successfully',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -103,8 +110,11 @@ class _ProfileState extends State<Profile> {
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
               dismissDirection: DismissDirection.horizontal,
-              )))
-          .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
+              ));
+            navigator.popUntil((route) => route.isFirst);
+            setState(() {});
+          })
+          .catchError((error) { ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(error.toString().substring(
                   error.toString().indexOf(']') + 2,
                   error.toString().indexOf(']') + 3)
@@ -114,16 +124,9 @@ class _ProfileState extends State<Profile> {
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(13)),
-              dismissDirection: DismissDirection.horizontal)));
-
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .delete();
+              dismissDirection: DismissDirection.horizontal));
+          });
     }
-    await Auth().deleteUser();
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    setState(() {});
   }
 
   fetchUserFavGenres() async {

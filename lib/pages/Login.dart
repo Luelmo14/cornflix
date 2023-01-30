@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
         });
       } else {
         setState(() {
-          errorMessage = 'Something went wrong.';
+          errorMessage = 'Please fill in all fields.';
         });
       }
     }
@@ -215,10 +215,10 @@ class _LoginState extends State<Login> {
                                   hidePassword = !hidePassword;
                                 });
                               },
-                              icon: const Icon(
-                                Icons.remove_red_eye_outlined,
-                                color: Color.fromRGBO(202, 202, 202, 1),
-                                size: 21,
+                              icon: Icon(
+                                hidePassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
+                                color: const Color.fromRGBO(202, 202, 202, 1),
+                                size: 22,
                               )
                           ),
                           border: InputBorder.none,

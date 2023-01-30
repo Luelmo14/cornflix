@@ -37,9 +37,17 @@ class _RegisterState extends State<Register> {
           setState(() {
             errorMessage = 'The password provided is too weak.';
           });
+        } else if (e.code == 'invalid-email') {
+          setState(() {
+            errorMessage = 'Invalid email.';
+          });
         } else if (e.code == 'email-already-in-use') {
           setState(() {
             errorMessage = 'The account already exists for that email.';
+          });
+        } else {
+          setState(() {
+            errorMessage = 'Please fill in all fields.';
           });
         }
       } catch (e) {
@@ -352,10 +360,10 @@ class _RegisterState extends State<Register> {
                                             hidePassword = !hidePassword;
                                           });
                                         },
-                                        icon: const Icon(
-                                          Icons.remove_red_eye_outlined,
-                                          color: Color.fromRGBO(202, 202, 202, 1),
-                                          size: 21,
+                                        icon: Icon(
+                                          hidePassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
+                                          color: const Color.fromRGBO(202, 202, 202, 1),
+                                          size: 22,
                                         )
                                     ),
                                   border: InputBorder.none,
@@ -404,10 +412,10 @@ class _RegisterState extends State<Register> {
                                             hideConfirmPassword = !hideConfirmPassword;
                                           });
                                         },
-                                        icon: const Icon(
-                                          Icons.remove_red_eye_outlined,
-                                          color: Color.fromRGBO(202, 202, 202, 1),
-                                          size: 21,
+                                        icon: Icon(
+                                          hideConfirmPassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
+                                          color: const Color.fromRGBO(202, 202, 202, 1),
+                                          size: 22,
                                         )
                                     ),
                                   border: InputBorder.none,
