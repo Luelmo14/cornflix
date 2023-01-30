@@ -102,6 +102,33 @@ class _HomeState extends State<Home> {
       recommendedMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
       recommendedMoviesMap['results'].removeWhere((e) => dismissedMovies.contains(e['id']));
 
+      // if there are less than 10 movies, add more movies from other pages
+      if (recommendedMoviesMap['results'].length < 10) {
+        for (int i = 2; i < 5; i++) {
+          uri = 'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=$i&with_genres=';
+          for (var i = 0; i < genreIds.length; i++) {
+            uri += genreIds[i].toString();
+            if (i != genreIds.length - 1) {
+              uri += '%2C';
+            }
+          }
+          url = Uri.parse(uri);
+          response = await client.get(url);
+
+          if (response.statusCode == 200) {
+            data = response.body;
+            var auxMap = jsonDecode(data);
+            auxMap['results'].removeWhere((e) => e['poster_path'] == null);
+            auxMap['results'].removeWhere((e) => dismissedMovies.contains(e['id']));
+            recommendedMoviesMap['results'].addAll(auxMap['results']);
+          } else {
+            // ignore: avoid_print
+            print(response.statusCode);
+          }
+        }
+      }
+
+
       while (recommendedMoviesMap['results'].length < 10) {
         var auxGenreIds = genreIds;
         auxGenreIds.shuffle();
@@ -246,6 +273,30 @@ class _HomeState extends State<Home> {
         moviesFromCountry.clear();
         moviesFromCountry.addAll(moviesFromCountryMap);
         moviesFromCountry.sort((a, b) => b['popularity'].compareTo(a['popularity']));
+
+        if (moviesFromCountry.length < 10) {
+          for (int i = 2; i < 5; i++) {
+            var client = http.Client();
+            var url = Uri.parse(
+                'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=$i&with_original_language=$languageCode&with_watch_monetization_types=flatrate');
+            var response = await client.get(url);
+            if (response.statusCode == 200) {
+              var data = response.body;
+              List<dynamic> moviesFromCountryMap = jsonDecode(data)['results'];
+              moviesFromCountryMap.removeWhere((e) => e['poster_path'] == null);
+              moviesFromCountryMap.removeWhere((e) => dismissedMovies.contains(e['id']));
+              moviesFromCountryMap.removeWhere((e) => moviesFromCountry.contains(e));
+
+              moviesFromCountry.addAll(moviesFromCountryMap);
+              moviesFromCountry.sort((a, b) => b['popularity'].compareTo(a['popularity']));
+            } else {
+              // ignore: avoid_print
+              print(response.statusCode);
+            }
+          }
+
+
+        }
         return moviesFromCountryRecommended = RecommendedMovies.fromJson({'results': moviesFromCountry});
 
       } else {

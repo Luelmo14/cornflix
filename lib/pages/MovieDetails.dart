@@ -912,7 +912,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          const SizedBox(height: 15),
+                                          const SizedBox(height: 19),
                                         ],
                                       ),
                                     );
@@ -1080,8 +1080,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          const SizedBox(height: 15),
-                                          const SizedBox(height: 15),
+                                          const SizedBox(height: 19),
                                         ],
                                       ),
                                     );
