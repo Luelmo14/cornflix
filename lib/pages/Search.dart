@@ -184,6 +184,7 @@ class _SearchState extends State<Search> {
                     ),
                     padding: const EdgeInsets.only(top: 3, right: 10),
                     child: TextField(
+                      textAlignVertical: TextAlignVertical.center,
                       controller: searchController,
                       onChanged: (value) {
                         setState(() {
@@ -191,23 +192,42 @@ class _SearchState extends State<Search> {
                         });
                       },
                       style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
-                        prefixIcon: Padding(
+                        suffixIcon: Material(
+                          color: Colors.transparent,
+                          shape: const CircleBorder(),
+                          clipBehavior: Clip.hardEdge,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.clear_rounded,
+                              color: Color.fromRGBO(202, 202, 202, 60),
+                              size: 20,
+                            ),
+                            onPressed: () {
+                                searchController.clear();
+                              },
+                          ),
+                        ),
+                        suffixIconConstraints: const BoxConstraints(
+                            minHeight: 24,
+                            minWidth: 24
+                        ),
+                        prefixIcon: const Padding(
                           padding: EdgeInsets.only(left: 16, right: 11),
                           child: ImageIcon(
                             AssetImage('assets/images/searchTextFieldIcon.png'),
                             color: Color.fromRGBO(202, 202, 202, 1),
                           ),
                         ),
-                        prefixIconConstraints: BoxConstraints(
+                        prefixIconConstraints: const BoxConstraints(
                           minWidth: 10,
                           minHeight: 10,
                         ),
                         hintText: 'Search for a movie',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color.fromRGBO(202, 202, 202, 1),
-                          fontSize: 15,
+                          fontSize: 15.4,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w400,
                         ),

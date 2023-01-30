@@ -354,17 +354,22 @@ class _RegisterState extends State<Register> {
                                   fontFamily: 'Inter',
                                 ),
                                 decoration: InputDecoration(
-                                    suffixIcon: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            hidePassword = !hidePassword;
-                                          });
-                                        },
-                                        icon: Icon(
-                                          hidePassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
-                                          color: const Color.fromRGBO(202, 202, 202, 1),
-                                          size: 22,
-                                        )
+                                    suffixIcon: Material(
+                                      color: Colors.transparent,
+                                      shape: const CircleBorder(),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              hidePassword = !hidePassword;
+                                            });
+                                          },
+                                          icon: Icon(
+                                            hidePassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
+                                            color: const Color.fromRGBO(202, 202, 202, 1),
+                                            size: 22,
+                                          )
+                                      ),
                                     ),
                                   border: InputBorder.none,
                                   hintText: 'Password',
@@ -406,17 +411,22 @@ class _RegisterState extends State<Register> {
                                   fontFamily: 'Inter',
                                 ),
                                 decoration: InputDecoration(
-                                    suffixIcon: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            hideConfirmPassword = !hideConfirmPassword;
-                                          });
-                                        },
-                                        icon: Icon(
-                                          hideConfirmPassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
-                                          color: const Color.fromRGBO(202, 202, 202, 1),
-                                          size: 22,
-                                        )
+                                    suffixIcon: Material(
+                                      color: Colors.transparent,
+                                      shape: const CircleBorder(),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              hideConfirmPassword = !hideConfirmPassword;
+                                            });
+                                          },
+                                          icon: Icon(
+                                            hideConfirmPassword ? Icons.remove_red_eye_outlined : Icons.remove_red_eye_rounded,
+                                            color: const Color.fromRGBO(202, 202, 202, 1),
+                                            size: 22,
+                                          )
+                                      ),
                                     ),
                                   border: InputBorder.none,
                                   hintText: 'Confirm Password',
