@@ -446,9 +446,12 @@ class _RegisterState extends State<Register> {
 
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                        child: GestureDetector(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(14),
+                          splashColor: Colors.black12.withOpacity(0.165),
+                          splashFactory: InkRipple.splashFactory,
                           onTap: createUserWithEmailAndPassword,
-                          child: Container(
+                          child: Ink(
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
                                 boxShadow: const [

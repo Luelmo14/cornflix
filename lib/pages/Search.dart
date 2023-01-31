@@ -250,8 +250,23 @@ class _SearchState extends State<Search> {
                           height: 1.5,
                         ),
                       ),
-                    )
-                    : ListView.builder(
+                    ) :
+                searchedMovies?.results?.isEmpty ?? false
+                    ? const Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20, top: 70),
+                  child: Text(
+                    'No results found. Try searching for something else.',
+                    overflow: TextOverflow.clip,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color.fromRGBO(150, 150, 150, 1),
+                      fontSize: 17,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
+                  ),
+                ) : ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: searchedMovies?.results?.length ?? 0,

@@ -215,9 +215,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                       if (snapshot.hasData) {
                         return Stack(
                           children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black,
+                            FutureBuilder(
+                            future: getMovieDetailsById(),
+                            builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.black,
                                   border: Border(
                                     bottom: BorderSide(
                                       color: Color.fromRGBO(15, 15, 15, 1),
@@ -225,13 +229,30 @@ class _MovieDetailsState extends State<MovieDetails> {
                                     ),
                                   ),
                                 ),
-                              child: Image.network(
-                                'https://image.tmdb.org/t/p/original/${movieDetailsData!.backdropPath ?? movieDetailsData!.posterPath}',
-                                fit: BoxFit.cover,
-                                height: 400,
-                                width: double.infinity,
+                                child: Image.network(
+                                  'https://image.tmdb.org/t/p/original/${movieDetailsData!.backdropPath ?? movieDetailsData!.posterPath}',
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.none,
+                                  height: 400,
+                                  //width: double.infinity,
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text("${snapshot.error}");
+                            }
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 155, bottom: 200),
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(
+                                    color: Color.fromRGBO(255, 56, 56, 1),
+                                  ),
+                                ),
                               ),
-                            ),
+                            );
+                            }),
                             Positioned(
                               top: 35,
                               left: 25,
@@ -251,7 +272,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   }
                                 },
                                 child: Image.asset(
-                                  'assets/images/backFromDetails.png',
+                                  'assets/images/backFromDetails2.png',
                                   height: 44,
                                   width: 44,
                                 ),

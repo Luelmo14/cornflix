@@ -5,7 +5,6 @@ import '../auth.dart';
 import '../components/NavBar.dart';
 import '../data/ChipData.dart';
 import '../data/Chips.dart';
-import 'Login.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
@@ -262,83 +261,91 @@ class _ProfileState extends State<Profile> {
                                         ],
                                       ),
                                     ),
-                                    IconButton(
-                                      icon: Image.asset(
-                                          'assets/images/editIcon.png',
-                                          width: 25,
-                                          height: 25,
-                                      ),
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                                title: const Text("Edit your name",
-                                                    style: TextStyle(color: Colors.white)),
-                                                backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
-                                                content: TextField(
-                                                  controller: nameController,
-                                                  style: const TextStyle(color: Colors.white),
-                                                  decoration: const InputDecoration(
-                                                          hintText: "Enter new name",
-                                                          hintStyle: TextStyle(color: Color.fromRGBO(163, 163, 163, 1))),
-                                                ),
-                                                actions: <Widget>[
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(right: 8),
-                                                          child: Container(
-                                                            height: 35,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: const Color.fromRGBO(36, 37, 41, 1),
-                                                            ),
-                                                            child: TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Cancel",
-                                                                  style: TextStyle(color: Colors.white)),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(left: 8),
-                                                          child: Container(
-                                                            height: 35,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: const Color.fromRGBO(243, 134, 71, 1),
-                                                            ),
-                                                            child: TextButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  name = nameController.text;
-                                                                  _updateName();
-                                                                });
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Confirm",
-                                                                  style: TextStyle(
-                                                                      color: Colors.white)),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                    Material(
+                                      color: Colors.transparent,
+                                      shape: const CircleBorder(),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: IconButton(
+                                        icon: Image.asset(
+                                            'assets/images/editIcon.png',
+                                            width: 25,
+                                            height: 25,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                                  title: const Text("Edit your name",
+                                                      style: TextStyle(color: Colors.white)),
+                                                  backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
+                                                  content: TextField(
+                                                    controller: nameController,
+                                                    style: const TextStyle(color: Colors.white),
+                                                    decoration: const InputDecoration(
+                                                            focusedBorder: UnderlineInputBorder(
+                                                                borderSide: BorderSide(color: Color.fromRGBO(243, 134, 71, 1),
+                                                                width: 1.5)),
+                                                            hintText: "Enter new name",
+                                                            hintStyle: TextStyle(color: Color.fromRGBO(163, 163, 163, 1))),
                                                   ),
-                                                ],
-                                              );
-                                            });
+                                                  actions: <Widget>[
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(right: 8),
+                                                            child: Container(
+                                                              height: 35,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: const Color.fromRGBO(36, 37, 41, 1),
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text(
+                                                                    "Cancel",
+                                                                    style: TextStyle(color: Colors.white)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(left: 8),
+                                                            child: Container(
+                                                              height: 35,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: const Color.fromRGBO(243, 134, 71, 1),
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    name = nameController.text;
+                                                                    _updateName();
+                                                                  });
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text(
+                                                                    "Confirm",
+                                                                    style: TextStyle(
+                                                                        color: Colors.white)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              });
 
-                                      },
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -386,82 +393,90 @@ class _ProfileState extends State<Profile> {
                                         ],
                                       ),
                                     ),
-                                    IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/editIcon.png',
-                                        width: 25,
-                                        height: 25,
-                                      ),
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                                title: const Text("Edit your surname",
-                                                    style: TextStyle(color: Colors.white)),
-                                                backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
-                                                content: TextField(
-                                                  controller: surnameController,
-                                                  style: const TextStyle(color: Colors.white),
-                                                  decoration: const InputDecoration(
-                                                      hintText: "Enter new surname",
-                                                      hintStyle: TextStyle(color: Color.fromRGBO(163, 163, 163, 1))),
-                                                ),
-                                                actions: <Widget>[
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(right: 8),
-                                                          child: Container(
-                                                            height: 35,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: const Color.fromRGBO(36, 37, 41, 1),
-                                                            ),
-                                                            child: TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Cancel",
-                                                                  style: TextStyle(color: Colors.white)),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(left: 8),
-                                                          child: Container(
-                                                            height: 35,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: const Color.fromRGBO(243, 134, 71, 1),
-                                                            ),
-                                                            child: TextButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  surname = surnameController.text;
-                                                                  _updateSurname(surname);
-                                                                });
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Confirm",
-                                                                  style: TextStyle(
-                                                                      color: Colors.white)),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                    Material(
+                                      color: Colors.transparent,
+                                      shape: const CircleBorder(),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: IconButton(
+                                        icon: Image.asset(
+                                          'assets/images/editIcon.png',
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                                  title: const Text("Edit your surname",
+                                                      style: TextStyle(color: Colors.white)),
+                                                  backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
+                                                  content: TextField(
+                                                    controller: surnameController,
+                                                    style: const TextStyle(color: Colors.white),
+                                                    decoration: const InputDecoration(
+                                                        focusedBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: Color.fromRGBO(243, 134, 71, 1),
+                                                                width: 1.5)),
+                                                        hintText: "Enter new surname",
+                                                        hintStyle: TextStyle(color: Color.fromRGBO(163, 163, 163, 1))),
                                                   ),
-                                                ],
-                                              );
-                                            });
-                                      },
+                                                  actions: <Widget>[
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(right: 8),
+                                                            child: Container(
+                                                              height: 35,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: const Color.fromRGBO(36, 37, 41, 1),
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text(
+                                                                    "Cancel",
+                                                                    style: TextStyle(color: Colors.white)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(left: 8),
+                                                            child: Container(
+                                                              height: 35,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: const Color.fromRGBO(243, 134, 71, 1),
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    surname = surnameController.text;
+                                                                    _updateSurname(surname);
+                                                                  });
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text(
+                                                                    "Confirm",
+                                                                    style: TextStyle(
+                                                                        color: Colors.white)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -509,82 +524,90 @@ class _ProfileState extends State<Profile> {
                                         ],
                                       ),
                                     ),
-                                    IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/editIcon.png',
-                                        width: 25,
-                                        height: 25,
-                                      ),
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                                title: const Text("Edit your email",
-                                                    style: TextStyle(color: Colors.white)),
-                                                backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
-                                                content: TextField(
-                                                  controller: emailController,
-                                                  style: const TextStyle(color: Colors.white),
-                                                  decoration: const InputDecoration(
-                                                      hintText: "Enter new email",
-                                                      hintStyle: TextStyle(color: Color.fromRGBO(163, 163, 163, 1))),
-                                                ),
-                                                actions: <Widget>[
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(right: 8),
-                                                          child: Container(
-                                                            height: 35,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: const Color.fromRGBO(36, 37, 41, 1),
-                                                            ),
-                                                            child: TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Cancel",
-                                                                  style: TextStyle(color: Colors.white)),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(left: 8),
-                                                          child: Container(
-                                                            height: 35,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: const Color.fromRGBO(243, 134, 71, 1),
-                                                            ),
-                                                            child: TextButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  email = emailController.text;
-                                                                  updateUserEmail(email);
-                                                                });
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Confirm",
-                                                                  style: TextStyle(
-                                                                      color: Colors.white)),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                    Material(
+                                      color: Colors.transparent,
+                                      shape: const CircleBorder(),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: IconButton(
+                                        icon: Image.asset(
+                                          'assets/images/editIcon.png',
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                                  title: const Text("Edit your email",
+                                                      style: TextStyle(color: Colors.white)),
+                                                  backgroundColor: const Color.fromRGBO(23, 25, 26, 1),
+                                                  content: TextField(
+                                                    controller: emailController,
+                                                    style: const TextStyle(color: Colors.white),
+                                                    decoration: const InputDecoration(
+                                                        focusedBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: Color.fromRGBO(243, 134, 71, 1),
+                                                                width: 1.5)),
+                                                        hintText: "Enter new email",
+                                                        hintStyle: TextStyle(color: Color.fromRGBO(163, 163, 163, 1))),
                                                   ),
-                                                ],
-                                              );
-                                            });
-                                      },
+                                                  actions: <Widget>[
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(right: 8),
+                                                            child: Container(
+                                                              height: 35,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: const Color.fromRGBO(36, 37, 41, 1),
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text(
+                                                                    "Cancel",
+                                                                    style: TextStyle(color: Colors.white)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(left: 8),
+                                                            child: Container(
+                                                              height: 35,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                color: const Color.fromRGBO(243, 134, 71, 1),
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    email = emailController.text;
+                                                                    updateUserEmail(email);
+                                                                  });
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                                child: const Text(
+                                                                    "Confirm",
+                                                                    style: TextStyle(
+                                                                        color: Colors.white)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),

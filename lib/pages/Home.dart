@@ -102,7 +102,6 @@ class _HomeState extends State<Home> {
       recommendedMoviesMap['results'].removeWhere((e) => e['poster_path'] == null);
       recommendedMoviesMap['results'].removeWhere((e) => dismissedMovies.contains(e['id']));
 
-      // if there are less than 10 movies, add more movies from other pages
       if (recommendedMoviesMap['results'].length < 10) {
         for (int i = 2; i < 5; i++) {
           uri = 'https://api.themoviedb.org/3/discover/movie?api_key=b5f80d427803f2753428de379acc4337&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=$i&with_genres=';
@@ -127,7 +126,6 @@ class _HomeState extends State<Home> {
           }
         }
       }
-
 
       while (recommendedMoviesMap['results'].length < 10) {
         var auxGenreIds = genreIds;
@@ -294,8 +292,6 @@ class _HomeState extends State<Home> {
               print(response.statusCode);
             }
           }
-
-
         }
         return moviesFromCountryRecommended = RecommendedMovies.fromJson({'results': moviesFromCountry});
 
